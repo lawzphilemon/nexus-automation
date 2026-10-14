@@ -27,6 +27,10 @@ python "${CLAUDE_PLUGIN_ROOT}/scripts/faq-scan.py" "<post URL>" ["<post URL>" ..
 
 Each line reads `<questions> <placement> <url>`. `standalone` FAQPage nodes suggest a metabox or widget; `graph` suggests an SEO plugin and an in-body FAQ. If any post shows `0`, tell the user their template outputs an empty FAQPage (`mainEntity: []`), which is invalid structured data, and that it should print only when at least one question exists. Suggest a mode from the result and let the user confirm. If Python is unavailable, ask the user instead. Default to `body` when unknown.
 
+Also confirm **Voice: brand (default) | third-party**, i.e. who is speaking in the article:
+- `brand`: the article is published on the brand's own site, so the brand speaks as "we" ("kami" in Indonesian) and addresses the reader directly. Use this whenever the target domain belongs to the brand.
+- `third-party`: a media, review, or guest post where the writer is outside the brand and names it in the third person, with a disclosure if there is a relationship.
+
 ## Step 2 — Internal Link Discovery
 
 If the user has already provided specific internal links to use, skip discovery and go straight to Step 3 using those.
@@ -94,6 +98,7 @@ Save the outline to `<project>/04-outline.md` (overwrite if it exists), then del
 Status: confirmed
 FAQ delivery: [body / metabox]
 CTAs: [1 / 2] — [reason]
+Voice: [brand — <Brand> as "we"/"kami" / third-party]
 ```
 
 End: "Confirm the outline above, then run /firstdraft."

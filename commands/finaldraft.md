@@ -33,6 +33,10 @@ allowed-tools: Read, Write
 - [ ] Heading hierarchy correct (H1 -> H2 -> H3, no skipped levels)?
 - [ ] No duplicate heading text?
 
+**Voice compliance** (from the outline's `Voice:` line; `brand` if absent and the article is for the brand's own site)
+- [ ] `brand`: the brand speaks as "we"/"kami" throughout, including the FAQ, and no sentence describes the brand from outside ("[Brand]'s service page lists…", "[Brand] runs…")?
+- [ ] `third-party`: the brand is named in the third person, with the disclosure if there is one?
+
 **Humanizer compliance:** run the humanizer skill's self-check in full. Fix failures before delivery.
 
 3. Finalize the article in clean markdown. Bold technical terms on first use only.

@@ -18,7 +18,7 @@ If the information needed for a claim is missing, ask for it or omit the claim.
 
 ## Placement
 
-Add one soft, factual sentence at a natural decision point. Explain why the offer is relevant to the section immediately above it. Do not create a detached sales section or a generic features-and-benefits pitch.
+Add one soft, factual sentence at a natural decision point, in the article's voice: when the article is published on the brand's own site, the brand speaks as "we"/"kami", never as an outside observer ("[Brand] provides…"). Explain why the offer is relevant to the section immediately above it. Do not create a detached sales section or a generic features-and-benefits pitch.
 
 An optional comparison table may contain at most four rows. Compare only dimensions supported by supplied or verified evidence. Do not imply that the offer is universally better.
 

@@ -99,12 +99,13 @@ Write valid YAML and escape values when needed. The article must contain no dupl
 ```text
 Final draft complete and saved to <project>/latest.md. Choose:
 1. Revise the article
-2. Run /convert
-3. Run /export-gdoc (Google Docs)
-4. Run /convert, then /export-gdoc
+2. Run /constructive-self-criticize (recommended before /convert)
+3. Run /convert
+4. Run /export-gdoc (Google Docs)
+5. Run /convert, then /export-gdoc
 ```
 
-If the user chooses option 4, complete `/convert` first and export that converted version without asking them to repeat the request.
+If the user chooses option 5, complete `/convert` first and export that converted version without asking them to repeat the request.
 
 Paste the full article into chat only when the user explicitly asks to see it.
 

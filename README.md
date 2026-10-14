@@ -12,7 +12,7 @@ General-purpose Claude Code plugin for SEO/GEO article research, drafting, conve
 ## Claude Code pipeline
 
 ```text
-/research → /improve → /geo → /outline → /firstdraft → /finaldraft → [/convert | /convert-truemission] → /export-gdoc
+/research → /improve → /geo → /outline → /firstdraft → /finaldraft → /constructive-self-criticize → [/convert | /convert-truemission] → /export-gdoc
 ```
 
 `/humanize` also works standalone.
@@ -52,6 +52,10 @@ Writes the full article from the confirmed outline and silently applies the appr
 ### `/finaldraft` — NEX-Fn
 
 Re-runs the humanizer and GEO/SEO checks, then saves the final article, On-Page SEO Pack, and Schema JSON-LD once to `nexus-output/latest.md`. Later stages read this artifact directly instead of repeating the article in chat.
+
+### `/constructive-self-criticize` — NEX-C
+
+Reviews a finished article as its target reader, the brand owner, and a senior SEO/GEO editor: point of view, unsupported claims, contradictions, weak answers, and gaps against NEX-G. It saves up to 10 ranked findings, each with a concrete fix, to `06-critique.md`, then applies only the ones you approve, without adding new claims. Also works on any pasted article.
 
 ### `/convert` — NEX-U
 

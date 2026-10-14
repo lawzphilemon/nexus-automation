@@ -26,7 +26,7 @@ Read the project's files and report:
 ```text
 Project <CODE> · <slug> · <keyword> · <market>
 | Stage | File | Status |
-| research / improve / geo / outline / firstdraft / finaldraft / convert | 01-research.md … latest.md | done · confirmed · not started |
+| research / improve / geo / outline / firstdraft / finaldraft / critique / convert | 01-research.md … latest.md, 06-critique.md | done · confirmed · not started |
 ```
 
 The outline counts as confirmed only when its first line is `Status: confirmed`. `/convert` is done when `latest.md` contains CTA blocks.

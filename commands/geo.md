@@ -8,7 +8,9 @@ allowed-tools: Read, Write, WebSearch, WebFetch
 
 **Mission:** Query fan-out analysis and GEO content structure prescription, grounded in observed search data.
 
-**Dependency:** Requires NEX-R and NEX-I output. Read `nexus-output/01-research.md` and `nexus-output/02-improve.md` for any output not in the conversation.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
+**Dependency:** Requires NEX-R and NEX-I output. Read `<project>/01-research.md` and `<project>/02-improve.md` for any output not in the conversation.
 
 1. **Collect observed queries first:**
    - PAA questions from NEX-R.
@@ -46,7 +48,7 @@ GEO Play options: Direct Answer Block / FAQ Section / Step-by-step List / Compar
 
 5. **Information gain proposition:** ask the user what first-hand data, experience, cases, or expertise they can contribute. Build one specific sentence from their answer: the unique angle this article adds that current top results lack. If they have nothing to add, base it on the NEX-R content gap and label it "Gap-based, no first-hand evidence".
 
-6. Save the complete stage output to `nexus-output/03-geo.md` (overwrite if it exists), then deliver it in chat.
+6. Save the complete stage output to `<project>/03-geo.md` (overwrite if it exists), then deliver it in chat.
 7. End: "Run /outline to continue with NEX-O."
 
 ## Rules

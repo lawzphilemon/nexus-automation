@@ -8,7 +8,9 @@ allowed-tools: WebFetch, WebSearch, Read, Write, Bash
 
 **Mission:** Build the GEO-compliant article outline with real, verified internal links and pre-tagged conversion points.
 
-**Dependency:** Requires NEX-R, NEX-I, NEX-G output. Missing → "Run /research, /improve, /geo first." Read `nexus-output/01-research.md`, `02-improve.md`, and `03-geo.md` for any output not in the conversation.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
+**Dependency:** Requires NEX-R, NEX-I, NEX-G output. Missing → "Run /research, /improve, /geo first." Read `<project>/01-research.md`, `02-improve.md`, and `03-geo.md` for any output not in the conversation.
 
 ## Step 1 — Confirm basics
 Confirm: target language, word count, tone of voice, end-goal CTA. Ask if missing, recommend best practice if unsure (informational 1,500–2,500 words, comparison 2,000–3,000, how-to 1,200–2,000, based on NEX-R SERP average if available).
@@ -86,7 +88,7 @@ If any condition fails, use 1 CTA. When in doubt, use 1.
 ## Step 4 — Confirm
 Ask the user to confirm the outline, including the internal links, the CTA count with its reason, and the conversion point tags, before proceeding. The user can override the CTA count.
 
-Save the outline to `nexus-output/04-outline.md` (overwrite if it exists), then deliver it in chat. When the user confirms it, apply any requested changes to that file and insert `Status: confirmed` above the existing header. A confirmed outline always starts:
+Save the outline to `<project>/04-outline.md` (overwrite if it exists), then deliver it in chat. When the user confirms it, apply any requested changes to that file and insert `Status: confirmed` above the existing header. A confirmed outline always starts:
 
 ```text
 Status: confirmed

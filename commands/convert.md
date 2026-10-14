@@ -8,7 +8,9 @@ allowed-tools: Read, Write, WebFetch, WebSearch
 
 **Mission:** Turn a finished article into a lead-generating asset by adding relevant contact CTAs and optional product or service mentions at natural reading pauses, without breaking GEO/SEO structure or making unsupported claims.
 
-**Dependency:** Requires a finished article draft, ideally `nexus-output/latest.md` from NEX-Fn. Read that artifact first. If neither the artifact nor a complete draft exists: "Paste the final draft, or run /finaldraft first."
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
+**Dependency:** Requires a finished article draft, ideally `<project>/latest.md` from NEX-Fn. Read that artifact first. If neither the artifact nor a complete draft exists: "Paste the final draft, or run /finaldraft first."
 
 Retrieve the `wa-cta-standard` and `product-upsell` skills before writing any output.
 
@@ -76,7 +78,7 @@ Fix every failure before delivery.
 
 ## Output
 
-Write the full converted article back to `nexus-output/latest.md`, preserving its YAML metadata and replacing only the article body with CTA blocks inserted at their exact positions. Keep any `FAQ metabox (paste per field)` block unchanged, with no CTA copy in it. Take the FAQ delivery mode from the artifact's `faq-delivery` YAML field, not from line positions. Put every CTA block in a fenced `html` block so Pandoc exports it as plaintext, paste-ready code.
+Write the full converted article back to `<project>/latest.md`, preserving its YAML metadata and replacing only the article body with CTA blocks inserted at their exact positions. Keep any `FAQ metabox (paste per field)` block unchanged, with no CTA copy in it. Take the FAQ delivery mode from the artifact's `faq-delivery` YAML field, not from line positions. Put every CTA block in a fenced `html` block so Pandoc exports it as plaintext, paste-ready code.
 
 Preserve the On-Page SEO Pack fields in YAML and keep Schema Markup unchanged as the final heading and fenced `json` block.
 
@@ -84,4 +86,4 @@ Directly below each CTA block, add:
 
 `[Paste this block in WordPress Classic Editor → Text tab. Do not switch to Visual tab after pasting.]`
 
-Do not duplicate the full article in chat unless explicitly requested. End with: "CTA placement done - [N] block(s) inserted in nexus-output/latest.md. Run /export-gdoc to export this converted version."
+Do not duplicate the full article in chat unless explicitly requested. End with: "CTA placement done - [N] block(s) inserted in <project>/latest.md. Run /export-gdoc to export this converted version."

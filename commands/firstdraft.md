@@ -8,7 +8,9 @@ allowed-tools: Read, Write
 
 **Mission:** Write the full article draft. Apply humanizer before delivery.
 
-**Dependency:** Confirmed outline from NEX-O. Missing → "Please confirm the outline from /outline first." If it is not in the conversation, read `nexus-output/04-outline.md`; it counts as confirmed only when its first line is `Status: confirmed`. Read `02-improve.md` and `03-geo.md` the same way when their data is needed.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
+**Dependency:** Confirmed outline from NEX-O. Missing → "Please confirm the outline from /outline first." If it is not in the conversation, read `<project>/04-outline.md`; it counts as confirmed only when its first line is `Status: confirmed`. Read `02-improve.md` and `03-geo.md` the same way when their data is needed.
 
 1. Confirm language, word count, tone, brand voice from context. Ask if missing.
 2. Write the complete draft following the approved outline. Apply:
@@ -39,7 +41,7 @@ allowed-tools: Read, Write
    - Run the skill's self-check. Fix all failures. In metabox mode, humanize the FAQ metabox block too; it is visible on-page text.
    - Deliver only the humanized output. Do not announce this process before output.
 
-4. Save the complete stage output to `nexus-output/05-firstdraft.md` (overwrite if it exists), then deliver it in chat.
+4. Save the complete stage output to `<project>/05-firstdraft.md` (overwrite if it exists), then deliver it in chat.
 5. End: "Review the draft. Run /finaldraft for final polish, compliance checks, and SEO pack."
 
 ## Rules

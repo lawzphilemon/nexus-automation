@@ -17,7 +17,11 @@ General-purpose Claude Code plugin for SEO/GEO article research, drafting, conve
 
 `/humanize` also works standalone.
 
-Each stage saves its output to `nexus-output/` (`01-research.md` to `05-firstdraft.md`, then `latest.md`), so the pipeline can resume after the conversation is compacted or restarted.
+`/research` gives every article a unique project code, `NXS-YYMMDD-XXXX` (for example `NXS-261014-7QF3`). Each stage saves its output to that project's own folder, `nexus-output/<CODE>_<slug>/` (`01-research.md` to `05-firstdraft.md`, then `latest.md`), and `nexus-output/PROJECTS.md` lists every project with its status. A new session never overwrites another article's files, and the pipeline can resume after the conversation is compacted or restarted.
+
+### `/resume` — NEX-0
+
+Reopens an article by its code, slug, or keyword (or lists all projects), shows which stages are done, and names the next command. Later stages in that conversation keep using the same code.
 
 ### `/research` — NEX-R
 

@@ -10,6 +10,17 @@ allowed-tools: WebSearch, WebFetch, Read, Write, mcp__claude-in-chrome, mcp__Cla
 
 1. Ask for target keyword and target market (country + language) if not provided.
 
+   **Project code.** Every new article gets a unique code so its files survive later sessions and can be reopened: `NXS-YYMMDD-XXXX`, today's date plus four random characters from `23456789ABCDEFGHJKMNPQRSTVWXYZ` (no 0, 1, I, L, O, U), for example `NXS-261014-7QF3`. Make sure it is not already in `nexus-output/PROJECTS.md`. If the user gives an existing code, reuse that project instead: never create a new code for an existing article.
+
+   `<slug>` is the keyword in kebab-case. Everything for this article lives in `<project>` = `nexus-output/<CODE>_<slug>/`. Add a row to `nexus-output/PROJECTS.md` (create it with this header if missing):
+
+   ```text
+   | Code | Slug | Keyword | Market | Created | Status |
+   |---|---|---|---|---|---|
+   ```
+
+   Every later stage updates the Status column. Show the code prominently: "Your project code is <CODE>. Use /resume <CODE> to come back to it."
+
 2. **Choose the mode**, in this order:
    1. **Live browser mode** (default): use Claude in Chrome if connected. Otherwise use the built-in browser if available. State which browser is used.
    2. **Web search mode** (fallback): only when no browser is available, or the browser is blocked (step 3). Search `[keyword]` and `[keyword] [market/language]`, then tell the user the results are search-API results, not the live Google page.
@@ -76,7 +87,7 @@ while (Date.now() - started < 8000 && ![...document.querySelectorAll('h1')].some
    - **Featured snippet format** — paragraph / list / table / none
    - **Content gap** — what angle, depth, or question is missing across all top results
 
-7. Save the complete stage output to `nexus-output/01-research.md` (overwrite if it exists), including the mode used and the capture date, then deliver it in chat.
+7. Save the complete stage output to `<project>/01-research.md` (overwrite if it exists), including the mode used and the capture date, then deliver it in chat.
 8. End: "Run /improve to continue with NEX-I."
 
 ## Rules

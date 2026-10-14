@@ -41,6 +41,8 @@ Builds a GEO-compliant outline, discovers verified internal links from the suppl
 
 It also confirms **FAQ delivery**: `body` (default, FAQ as an H2 with FAQPage in the article schema) or `metabox` (for sites whose CMS renders the FAQ from a separate field and emits its own FAQPage). In metabox mode, later stages deliver the FAQ as a separate plain-text Q/A block and leave FAQPage out of the custom JSON-LD. `scripts/faq-scan.py` (Python stdlib, read-only) can detect the mode from existing posts and flags empty `FAQPage` output.
 
+It also confirms **Voice**: `brand` (default, the article is on the brand's own site, so the brand speaks as "we"/"kami" and never describes itself from outside) or `third-party` (media, review, or guest posts). `/firstdraft`, `/finaldraft`, and `/convert` follow and check it.
+
 Requires `WebFetch` and `WebSearch`.
 
 ### `/firstdraft` — NEX-F

@@ -53,7 +53,7 @@ Never place a CTA mid-sentence, mid-list, inside a Direct Answer Block, FAQ answ
 
 Follow `product-upsell` using only verified offer details from Step 0.
 
-- Add one soft, factual sentence connecting the offer to the section above.
+- Add one soft, factual sentence connecting the offer to the section above, in the article's voice: in `brand` voice the brand speaks as "we"/"kami" ("Our team…", "Tim kami…"), never "[Brand] provides…".
 - Add a short comparison table only when the supplied data supports it.
 - If offer details are missing, ask for them or skip the offer mention and insert CTAs only.
 - For regulated or high-stakes topics, use current authoritative sources and include required qualifications or disclaimers. If those inputs are unavailable, do not publish the claim.

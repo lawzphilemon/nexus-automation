@@ -29,6 +29,10 @@ allowed-tools: Read, Write
 - Section answer sentences: every H2 opens with one sentence that answers the section and makes sense if extracted alone
 - Stat Blocks: cite inline — "According to [Source], [year], [stat]" — using only stats verified in NEX-G. Leave out any stat marked "Needs source"; never fill it from memory
 
+**Voice** (from the outline's `Voice:` line; `brand` if absent and the article is for the brand's own site)
+- `brand`: the brand speaks as "we"/"kami" and addresses the reader directly. Name the brand only where it helps as an entity signal (first self-reference such as "We at [Brand]…" / "Kami di [Brand]…", case studies, CTA). Never describe the brand from outside: no "[Brand]'s service page lists…", "[Brand] runs…", "according to [Brand]…". Brand claims still need the same evidence.
+- `third-party`: name the brand in the third person and keep any disclosure from the outline.
+
 **Human writing rules (apply before finalizing draft)**
 - No transition fillers: delete Furthermore, Moreover, In addition, It is worth noting, In conclusion
 - No stacked hedges: "could potentially possibly" → "may"

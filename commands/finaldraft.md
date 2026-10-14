@@ -8,7 +8,9 @@ allowed-tools: Read, Write
 
 **Mission:** Final polish, three compliance checks, On-Page SEO Pack, Schema JSON-LD.
 
-**Dependency:** Requires a NEX-F draft. Missing -> "Run /firstdraft first." If the draft is not in the conversation, read `nexus-output/05-firstdraft.md`. Read `02-improve.md` and `03-geo.md` the same way for the compliance checks. Take the FAQ delivery mode from the `FAQ delivery:` line in the first 3 lines of `nexus-output/04-outline.md`; if that is unavailable, use `metabox` when the draft has a `FAQ metabox (paste per field)` block, otherwise `body`.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
+**Dependency:** Requires a NEX-F draft. Missing -> "Run /firstdraft first." If the draft is not in the conversation, read `<project>/05-firstdraft.md`. Read `02-improve.md` and `03-geo.md` the same way for the compliance checks. Take the FAQ delivery mode from the `FAQ delivery:` line in the first 3 lines of `<project>/04-outline.md`; if that is unavailable, use `metabox` when the draft has a `FAQ metabox (paste per field)` block, otherwise `body`.
 
 1. Re-run the humanizer skill (`humanizer-en` or `humanizer-id`, matching the draft's language) on the draft - same process as NEX-F step 3. Do not announce.
 
@@ -48,7 +50,7 @@ Internal links used: [anchor text] -> [destination URL]
 
 5. Generate Schema Markup (JSON-LD) based on NEX-G's recommendation. In body mode, include FAQPage with all Q&A pairs verbatim. In metabox mode, exclude FAQPage entirely, because the CMS metabox emits it.
 
-6. Write the complete result once to `nexus-output/latest.md`. Do not duplicate the article in chat. Use this exact artifact structure:
+6. Write the complete result once to `<project>/latest.md`. Do not duplicate the article in chat. Use this exact artifact structure:
 
 ````markdown
 ---
@@ -91,7 +93,7 @@ Write valid YAML and escape values when needed. The article must contain no dupl
 7. Offer the next action:
 
 ```text
-Final draft complete and saved to nexus-output/latest.md. Choose:
+Final draft complete and saved to <project>/latest.md. Choose:
 1. Revise the article
 2. Run /convert
 3. Run /export-gdoc (Google Docs)

@@ -9,9 +9,11 @@ allowed-tools: Read, Bash
 
 **Mission:** Put the latest complete NEX-Fn or NEX-U artifact in a Google Doc for review, comments, or client handoff, without rewriting or changing its content.
 
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
 ## Source
 
-Use `nexus-output/latest.md` by default, or the `.md` path given as an argument. It needs valid YAML with `title`, `slug`, and `meta-description`, the complete article from its H1, and `Schema Markup (JSON-LD)` as the final heading. If `/convert` ran, use the converted artifact. If no artifact exists, say so and suggest running `/finaldraft` first.
+Use `<project>/latest.md` by default, or the `.md` path given as an argument. It needs valid YAML with `title`, `slug`, and `meta-description`, the complete article from its H1, and `Schema Markup (JSON-LD)` as the final heading. If `/convert` ran, use the converted artifact. If no artifact exists, say so and suggest running `/finaldraft` first.
 
 ## Workflow
 
@@ -19,7 +21,7 @@ Use `nexus-output/latest.md` by default, or the `.md` path given as an argument.
 2. Build the HTML with the bundled filter, so the Doc starts with the metadata table: `Judul Artikel`, `Slug`, `Meta Description`, `Main Keyword`, `Related Keywords`, and `Notes` (rows without a value are skipped):
 
 ```bash
-pandoc "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wrap=none --no-highlight --lua-filter="${CLAUDE_PLUGIN_ROOT}/scripts/nexus-gdoc.lua" --output="nexus-output/<slug>.gdoc.html"
+pandoc "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wrap=none --no-highlight --lua-filter="${CLAUDE_PLUGIN_ROOT}/scripts/nexus-gdoc.lua" --output="<project>/<slug>.gdoc.html"
 ```
 
    CTA HTML and the JSON-LD stay in plain (unhighlighted) code blocks, so they arrive as paste-ready code with no stray links or styling.
@@ -31,7 +33,7 @@ pandoc "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wr
 
    No Google Drive connector: say so, keep the `.gdoc.html` file, and tell the user to upload it to Google Drive and open it with Google Docs. Skip step 4.
 
-4. Delete `nexus-output/<slug>.gdoc.html`. Keep the source artifact.
+4. Delete `<project>/<slug>.gdoc.html`. Keep the source artifact.
 
 Return only the Google Doc link. Do not paste the article again.
 

@@ -8,7 +8,9 @@ allowed-tools: Read, Write
 
 **Mission:** Intent analysis, semantic gaps, E-E-A-T improvement points.
 
-**Dependency:** Requires NEX-R output. Missing → "Please run /research first." If the NEX-R output is not in the conversation, read `nexus-output/01-research.md`.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+
+**Dependency:** Requires NEX-R output. Missing → "Please run /research first." If the NEX-R output is not in the conversation, read `<project>/01-research.md`.
 
 1. State the search intent subcategory: Informational / Commercial Investigation / Transactional / Navigational. Identify dominant and secondary intents.
 2. Deliver four sections:
@@ -33,7 +35,7 @@ allowed-tools: Read, Write
 - Authoritativeness: what citations, credentials, or named sources are absent?
 - Trustworthiness: what dates, disclaimers, or verifiable data are missing?
 
-3. Save the complete stage output to `nexus-output/02-improve.md` (overwrite if it exists), then deliver it in chat.
+3. Save the complete stage output to `<project>/02-improve.md` (overwrite if it exists), then deliver it in chat.
 4. End: "Run /geo to continue with NEX-G."
 
 ## Rules

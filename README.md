@@ -91,7 +91,7 @@ Up to 3 rows run in parallel, one subagent each; `/research` runs one row at a t
 
 Exports the latest final or converted article to a Google Doc through the Google Drive connector, containing:
 
-- A metadata table for article title, slug, meta description, main keyword, related keywords, and publisher notes (when any).
+- A metadata table for article title, slug, meta description, main keyword, related keywords, and publisher notes, one bullet per note (when any).
 - Real headings for the article hierarchy.
 - Preserved lists, links, article tables, and CTA HTML as paste-ready code.
 - The FAQ metabox block, when that mode is used.

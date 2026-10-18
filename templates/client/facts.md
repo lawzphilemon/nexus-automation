@@ -11,6 +11,7 @@ Terakhir diperbarui: {{DATE}}
 Dipakai untuk input yang tidak diberikan user atau baris sheet.
 
 - Domain: {{DOMAIN}}
+- Inisial brand: {{INITIALS}}
 - Bahasa utama: {{LANG}}
 - Voice: brand ("kami" di ID, "we" di EN). Ganti ke third-party kalau artikel terbit di situs pihak lain.
 - FAQ delivery: {{FAQ_DELIVERY}}
@@ -21,6 +22,15 @@ Dipakai untuk input yang tidak diberikan user atau baris sheet.
 - Penulis: {{AUTHOR}}
 - Kategori blog: {{BLOG_CATEGORY}}
 - Artikel ID menautkan halaman bahasa Indonesia, artikel EN menautkan halaman bahasa Inggris.
+
+### Google Drive (diisi /setup atau saat ekspor pertama)
+
+- Folder Drive: {{DRIVE_FOLDER}}
+- Folder Drive outline: {{DRIVE_FOLDER_OUTLINE}}
+- Folder Drive article: {{DRIVE_FOLDER_ARTICLE}}
+- Queue sheet: {{QUEUE_SHEET}}
+
+<!-- ID folder Google Drive. Folder utama bernama brand klien, berisi subfolder Outline dan Article. Nama Doc: INISIAL-OL-KODE (outline) dan INISIAL-AR-KODE (artikel), -v2 dan seterusnya untuk revisi. Queue sheet: ID Google Sheet antrean brand ini (INISIAL-QUEUE Brand), di folder utama. -->
 
 ### WordPress (opsional, untuk status `approved` di queue)
 

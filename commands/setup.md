@@ -13,7 +13,7 @@ Argument: $ARGUMENTS
 ## Rules
 
 - Never ask for, write, or repeat a password, application password, or token. WordPress auth is set by the user in their own environment.
-- Never overwrite an existing file. For an existing client folder or `queue.json`, show what is missing and add only that, after the user agrees.
+- Never overwrite an existing file. For an existing client folder, show what is missing and add only that, after the user agrees.
 - Never invent client facts. Fill in what the user says or what is verified on the client's own site; everything else stays `TODO`.
 - Do not change the sharing of any Google file.
 
@@ -40,6 +40,8 @@ Client name: the argument, else ask for a short kebab-case name (for example `ac
 Copy `${CLAUDE_PLUGIN_ROOT}/templates/client/` to `clients/<name>/` (`facts.md`, `links.md`, `context-profiles/README.md`, `conversion.example.md`) and fill `{{CLIENT_NAME}}` and `{{DATE}}`.
 
 Ask in one message for what only the user knows (each may be skipped): the website domain; the article languages; the CTA destination and button label per language; the author's name, role, and public profile URL; the blog category slug; what the brand must never claim; and the case studies the client allows, with what may be named.
+
+Suggest the client's initials from its brand name (2 to 4 capital letters, for example `ACM` for Acme) and save the confirmed value as `Inisial brand`; every Doc name starts with it.
 
 Then verify and prefill from the site, read-only:
 
@@ -69,22 +71,26 @@ Ask whether approved articles should go to this client's WordPress as drafts. If
 
 Never create, edit, or delete posts or media during setup.
 
-## 5. Queue sheet (optional)
+## 5. Drive folders (with the Google Drive connector)
 
-If `nexus-output/queue.json` exists, keep its sheet and offer only to set `default_client` when it has none. Otherwise ask whether to create one:
+Create the client's main folder (named after the brand, for example `Acme`) with two subfolders, `Outline` and `Article`, inside `drive_folder` from `nexus-output/queue.json` when set, else My Drive. Search by exact name first and reuse a folder that already exists in that place; never create a duplicate. Write the three IDs to `facts.md` as `Folder Drive`, `Folder Drive outline`, and `Folder Drive article`. Doc names and filing then follow /export-gdoc **Doc names and folders**.
 
-1. Create a Google Sheet with the Drive create-file tool (`mimeType: application/vnd.google-apps.spreadsheet`), titled `NEXUS Queue - <client or workspace>`.
+## 6. Queue sheet (optional)
+
+Each brand has its own queue sheet in its main Drive folder. If the client's `facts.md` already has a `Queue sheet`, keep it. Otherwise ask whether to create one:
+
+1. Create a Google Sheet with the Drive create-file tool (`mimeType: application/vnd.google-apps.spreadsheet`) inside the client's main folder (`Folder Drive`), named `<INITIALS>-QUEUE <Brand>`.
 2. Rename its first tab to `Antrean`. Write `${CLAUDE_PLUGIN_ROOT}/templates/sheet/antrean.tsv` (tab-separated) from cell A1, bold row 1, and freeze row 1 and columns A to C.
 3. Find the `Status` column by its header and give rows 2 onward a strict dropdown with the values in `templates/sheet/status-values.txt`.
 4. Add a tab `Panduan` and write `templates/sheet/panduan.tsv` from A1.
-5. Write `nexus-output/queue.json`: `{"spreadsheet_id": "<id>", "tab": "Antrean", "default_client": "<client>"}`.
+5. Write the sheet's ID to `facts.md` as `Queue sheet`.
 6. Read the header row back and confirm it matches the template.
 
-## 6. Summary
+## 7. Summary
 
 One table of what was created or changed (paths and the sheet link), the `TODO` lines left in `facts.md`, and what stays manual. Then the next steps:
 
 - Fill the `TODO` lines in `clients/<name>/facts.md`; every stage reads it live.
 - One article by hand: `/nexus-automation:research <keyword>`, choose the client, and follow each stage's prompt.
-- From the sheet: paste keyword-research rows from column A, set Status to `ready`, and run `/nexus-automation:queue`.
+- From the brand's queue sheet: paste keyword-research rows from column A, set Status to `ready`, and run `/nexus-automation:queue <client>` (or `/nexus-automation:queue` for every brand).
 - Another client later: `/nexus-automation:setup <other-client>`.

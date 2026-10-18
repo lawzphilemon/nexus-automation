@@ -27,9 +27,8 @@ pandoc "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wr
    CTA HTML and the JSON-LD stay in plain (unhighlighted) code blocks, so they arrive as paste-ready code with no stray links or styling.
 
 3. Upload with the Google Drive connector's create-file tool:
-   - Title: the article's H1.
+   - Title and folder: see **Doc names and folders** below, with type `AR`.
    - Content: the full `.gdoc.html` file as text, exactly as Pandoc wrote it (the connector cannot read local files, so copy the HTML character for character; never turn it into Markdown or shorten it), content type `text/html`. Leave conversion to Google Docs on.
-   - Folder: only if the user names one. Find it with the connector's search first.
 
    No Google Drive connector: say so, keep the `.gdoc.html` file, and tell the user to upload it to Google Drive and open it with Google Docs. Skip steps 4 and 5.
 
@@ -48,6 +47,21 @@ python "${CLAUDE_PLUGIN_ROOT}/scripts/gdoc-check.py" "<project>/<slug>.gdoc.html
 Return only the Google Doc link. Do not paste the article again.
 
 End with: "Google Doc ready - metadata table, formatted article, and schema included. Read-back check: OK." (or the note from step 4).
+
+## Doc names and folders
+
+Every Doc the pipeline creates (this command and the queue's outline export) follows one pattern, so a client's Docs sort together and the outline and article of one article pair up by code.
+
+**Name:** `<INITIALS>-<TYPE>-<CODE>[-v<N>] <H1>`, for example `ACM-AR-NXS-261018-K7RW Judul Artikel`.
+
+- `<INITIALS>`: the client's `Inisial brand` Default in `clients/<client>/facts.md` (2 to 4 capital letters). Missing: in an interactive run, suggest initials from the brand name, ask once, and save the confirmed value to `facts.md`; in queue mode, name the Doc without the prefix and write "add `Inisial brand` to facts.md" in the notes.
+- `<TYPE>`: `AR` for the article Doc (this command), `OL` for the outline Doc (the queue's outline export).
+- `<CODE>`: the project code.
+- `-v<N>`: the version. Every Doc created is logged in `<project>/drive-docs.md` (`| Type | Version | Title | Link | Date |`). The first Doc of a type has no suffix; the next one of the same type is `-v2`, then `-v3`.
+
+**Folder:** the client's main folder, named after the client's brand (for example `Acme`), holds two subfolders, `Outline` and `Article`. Outline Docs go into `Outline`, article Docs into `Article`. Their IDs are the `Folder Drive`, `Folder Drive outline`, and `Folder Drive article` Defaults in `facts.md`. For a missing ID: search Drive for the folder by exact name inside its parent (the main folder's parent is the `drive_folder` from `nexus-output/queue.json` when set, else My Drive), create it only when the search finds none, and write the ID back to `facts.md`. Never create a second folder with the same name in the same place.
+
+**No client** (`<project>/client.txt` missing or `none`): the Doc's title is the H1 (outline: `<CODE> outline - <H1>`), and it goes into `drive_folder` when set, else My Drive.
 
 ## Rules
 

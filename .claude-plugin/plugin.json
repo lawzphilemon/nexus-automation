@@ -1,7 +1,7 @@
 {
   "name": "nexus-automation",
   "displayName": "NEXUS Automation",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Multi-client SEO/GEO content pipeline: setup wizard, SERP analysis, intent and E-E-A-T gaps, query fan-out and GEO structure, outline with verified internal links and a cannibalization check, first and final draft with SEO pack and schema, humanizer, conversion layer, Google Docs export with read-back check, a Google Sheet queue with two review gates, and WordPress drafts.",
   "author": { "name": "Lawrence Philemon" },
   "commands": "./commands",

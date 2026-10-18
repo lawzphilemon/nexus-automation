@@ -19,7 +19,7 @@ Convert	Tidak	ya (default) atau tidak (tanpa blok CTA).
 Status	Ya	Mengatur proses. Kosong = dilewati. Lihat tabel status di bawah.
 Kode NXS sampai Catatan Claude	Diisi Claude	Jangan diisi manual.
 Context profile	Tidak	Nama file di folder context-profiles klien. Kosong = profile default klien, atau tanpa profile. Harga dari profile tidak pernah masuk artikel.
-Client	Tidak	Nama folder klien di clients/. Kosong = klien default di queue.json. Kolom lain yang kosong diisi dari Defaults di facts.md klien. Klien baru: jalankan /nexus-automation:setup nama-klien.
+Client	Tidak	Nama folder klien di clients/. Kosong = brand pemilik sheet ini. Kolom lain yang kosong diisi dari Defaults di facts.md klien. Klien baru: jalankan /nexus-automation:setup nama-klien.
 		
 Status	Siapa yang mengisi	Artinya
 (kosong) atau draft	Anda	Belum siap, dilewati.
@@ -40,4 +40,4 @@ Copy-paste dari sheet KW research: tempel 7 kolom (No sampai Notes) mulai dari k
 Review lewat komentar di Doc. Teks yang Anda ketik langsung di Doc tidak dibaca ulang oleh Claude.		
 Kolom dicari dari nama header, jadi urutan kolom boleh diubah. Nama header jangan diubah.		
 Feature image: simpan gambar sebagai feature-image.png (atau .jpg/.webp) di folder proyek artikel sebelum set approved, maka gambarnya otomatis dipasang.		
-Jalankan /nexus-automation:queue dari folder kerja yang berisi nexus-output/ dan clients/.		
+Jalankan /nexus-automation:queue nama-klien (atau tanpa nama untuk semua brand) dari folder kerja yang berisi nexus-output/ dan clients/.		

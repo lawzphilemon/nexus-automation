@@ -120,8 +120,9 @@ The user sets `approved` to send the article to WordPress, `revisi` for another 
 
 **`approved` → `wp-draft`** (runs in this session, no subagent: it is one command per row)
 1. No `wp_site` in `queue.json`, no `WP_NEXUS_AUTH`, or the row's domain is not on the `wp_site` host: leave the row on `approved` and write the reason in the notes. Nothing is sent.
-2. `python "${CLAUDE_PLUGIN_ROOT}/scripts/wp-draft.py" "<project>/latest.md" --site <wp_site> --lang <language code from Market>`. It always sends status `draft`, never publishes, and stops if a post with the same slug already exists (it prints that post's edit link).
-3. Write back: status `wp-draft`, the draft's edit link in the notes, timestamp, and what the publisher still pastes by hand: the FAQ metabox Q/A, the Yoast SEO title and meta description from the Doc's metadata table, the JSON-LD if the site uses it, the category, and the feature image (`feature-image-prompt.md`). A script failure (auth, slug exists, network) sets `error` with the script's message.
+2. Category: the category slugs the row's Notes name, else the client's Default `Kategori blog` in `facts.md`, else none (the site's default category).
+3. `python "${CLAUDE_PLUGIN_ROOT}/scripts/wp-draft.py" "<project>/latest.md" --site <wp_site> --lang <language code from Market> [--category <slug,slug>]`. It always sends status `draft`, never publishes, and stops if a post with the same slug already exists (it prints that post's edit link). It sets the categories (looked up in that language), then writes the YAML `title` and `meta-description` to the Yoast SEO title and meta description, and the `# FAQ metabox` Q/A pairs to the site's ACF FAQ repeater (`faq`: `faq_title`, `faq_content`).
+4. Write back: status `wp-draft`, the draft's edit link in the notes, timestamp, every `note:` and `warning:` line the script printed (an unknown category slug, or Yoast fields or FAQ rows WordPress did not save), and what the publisher still does by hand: the JSON-LD if the site uses it, the feature image (`feature-image-prompt.md`), and the "Diperbarui" date in the byline when the publish date is not the draft date. A script failure (auth, slug exists, network) sets `error` with the script's message.
 
 The user publishes the draft in WordPress and sets `done`.
 

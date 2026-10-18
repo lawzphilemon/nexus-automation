@@ -2,12 +2,15 @@
 """Send a finished NEXUS article (latest.md) to WordPress as a draft. Never publishes: the status is always "draft".
 
 Usage:
-  wp-draft.py <project>/latest.md --site https://example.com [--lang id] [--dry-run]
+  wp-draft.py <project>/latest.md --site https://example.com [--lang id] [--category slug[,slug]] [--dry-run]
 
 Title = the YAML h1, slug = the last segment of the YAML slug, content = the article body after the H1 up to
 "# FAQ metabox" or "# Schema Markup". ```html fences (the /convert CTA blocks) become Custom HTML blocks.
---lang sets the Polylang language. The FAQ metabox, Yoast title and meta description, and the JSON-LD are not
-sent: they stay in the article Doc for a manual paste.
+--lang sets the Polylang language. --category takes category slugs, looked up in that language; a slug the site
+does not have is printed as a note and the draft keeps the default category.
+After the draft exists, the YAML title and meta-description go to the Yoast SEO title and meta description in a
+second request; if WordPress refuses that, the draft stays and a note says to paste them by hand.
+The FAQ metabox and the JSON-LD are not sent: they stay in the article Doc for a manual paste.
 A post that already has this slug (any status) stops the run, so a re-run never creates a duplicate.
 Auth: WP_NEXUS_AUTH = base64 of "username:application password" (WordPress Users > Profile > Application Passwords).
 Needs Pandoc in PATH. Prints the draft's edit and preview links.
@@ -65,10 +68,12 @@ def payload(md, lang=None):
             "content": to_html(article_body(rest)), "status": "draft"}
     if lang:
         data["lang"] = lang
+    seo = {"_yoast_wpseo_title": meta.get("title"), "_yoast_wpseo_metadesc": meta.get("meta-description")}
+    data["meta"] = {k: v for k, v in seo.items() if v}
     return data
 
 
-def api(site, path, auth, data=None):
+def api(site, path, auth, data=None, warn=False):
     req = urllib.request.Request(f"{site.rstrip('/')}/wp-json/wp/v2/{path}",
                                  data=json.dumps(data).encode() if data is not None else None,
                                  headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json"})
@@ -76,7 +81,25 @@ def api(site, path, auth, data=None):
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.load(r)
     except urllib.error.HTTPError as e:
-        sys.exit(f"WordPress said {e.code}: {e.read().decode(errors='replace')[:300]}")
+        msg = f"WordPress said {e.code}: {e.read().decode(errors='replace')[:300]}"
+        if warn:
+            print(f"warning: {msg}")
+            return None
+        sys.exit(msg)
+
+
+def category_ids(site, auth, slugs, lang):
+    """IDs for the category slugs in this language (Polylang keeps one term per language). Unknown slugs are notes."""
+    ids = []
+    for slug in filter(None, (s.strip() for s in slugs.split(","))):
+        q = f"categories?slug={urllib.parse.quote(slug)}&_fields=id" + (f"&lang={lang}" if lang else "")
+        found = api(site, q, auth)
+        if len(found) == 1:
+            ids.append(found[0]["id"])
+        else:
+            print(f"note: category '{slug}' {'not found' if not found else 'is ambiguous'}"
+                  f"{f' in {lang}' if lang else ''}; set the category in the editor")
+    return ids
 
 
 def main():
@@ -84,12 +107,14 @@ def main():
     p.add_argument("latest_md")
     p.add_argument("--site", required=True)
     p.add_argument("--lang")
+    p.add_argument("--category", help="comma-separated category slugs, looked up in --lang")
     p.add_argument("--dry-run", action="store_true", help="print what would be sent; no network, no auth")
     a = p.parse_args()
 
     data = payload(Path(a.latest_md).read_text(encoding="utf-8").replace("\r\n", "\n"), a.lang)
     if a.dry_run:
-        print(json.dumps({**data, "content": data["content"][:400] + "..."}, ensure_ascii=False, indent=2))
+        print(json.dumps({**data, "content": data["content"][:400] + "...", "category slugs": a.category},
+                         ensure_ascii=False, indent=2))
         return
     auth = os.environ.get("WP_NEXUS_AUTH")
     if not auth:
@@ -102,11 +127,20 @@ def main():
         sys.exit(f"a post with slug '{data['slug']}' already exists ({existing[0]['status']}): "
                  f"{site}/wp-admin/post.php?post={existing[0]['id']}&action=edit")
 
+    ids = category_ids(site, auth, a.category, a.lang) if a.category else []
+    if ids:
+        data["categories"] = ids
+    seo = data.pop("meta")
     post = api(site, "posts", auth, data)
     assert post["status"] == "draft", post["status"]
     print(f"draft {post['id']}")
     if a.lang and post.get("lang") != a.lang:
         print(f"warning: language is '{post.get('lang')}', not '{a.lang}'; set it in the editor")
+    # Second request: a refused meta write must not fail the run after the draft already exists.
+    if seo:
+        saved = api(site, f"posts/{post['id']}", auth, {"meta": seo}, warn=True) or {}
+        if any(saved.get("meta", {}).get(k) != v for k, v in seo.items()):
+            print("note: Yoast SEO title / meta description not saved; paste them in the editor")
     print(f"edit: {site}/wp-admin/post.php?post={post['id']}&action=edit")
     print(f"preview: {site}/?p={post['id']}&preview=true")
 

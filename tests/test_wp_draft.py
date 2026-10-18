@@ -10,6 +10,7 @@ spec.loader.exec_module(wp_draft)
 md = '''---
 title: "CTR Adalah: Rumus"
 slug: "/id/blog/ctr-adalah/"
+meta-description: "CTR adalah persentase tayangan yang diklik."
 h1: "CTR Adalah: Rumus, \\"Cara\\" Hitung"
 related-keywords:
   - "rumus ctr"
@@ -49,9 +50,19 @@ assert '```{=html}\n<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>\n<!--
 assert 'FAQ metabox' not in body and 'Schema' not in body and '# CTR' not in body
 assert 'Paste this block' not in body
 
+calls = []
+def fake_api(site, path, auth, data=None, warn=False):
+    calls.append(path)
+    return [{'id': 110}] if 'slug=digital-marketing' in path else []
+wp_draft.api = fake_api
+assert wp_draft.category_ids('https://x', 'a', 'digital-marketing, seo,', 'id') == [110]
+assert calls == ['categories?slug=digital-marketing&_fields=id&lang=id', 'categories?slug=seo&_fields=id&lang=id']
+
 if shutil.which('pandoc'):
     data = wp_draft.payload(md, 'id')
     assert data['slug'] == 'ctr-adalah' and data['status'] == 'draft' and data['lang'] == 'id'
     assert '<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>' in data['content']
     assert '<h2 id="closing">Closing</h2>' in data['content']
+    assert data['meta'] == {'_yoast_wpseo_title': 'CTR Adalah: Rumus',
+                            '_yoast_wpseo_metadesc': 'CTR adalah persentase tayangan yang diklik.'}
 print('wp-draft test passed')

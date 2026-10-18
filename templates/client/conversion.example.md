@@ -4,8 +4,7 @@
 
 ## CTA
 
-- Channel: TODO (WhatsApp, contact form, booking page)
-- Destination: ask the user before inserting CTA blocks / or the URL from facts.md
+- Contact: never fixed here. /convert asks every run which channel (phone, email, address, or all) and the details; saved choices live in facts.md under Kontak untuk CTA.
 - Palette (wa-cta-standard tokens), only if the site's colors should not be detected from the homepage:
 
 | Token | Value |

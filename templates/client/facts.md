@@ -16,9 +16,8 @@ Dipakai untuk input yang tidak diberikan user atau baris sheet.
 - Voice: brand ("kami" di ID, "we" di EN). Ganti ke third-party kalau artikel terbit di situs pihak lain.
 - FAQ delivery: {{FAQ_DELIVERY}}
 - Context profile: {{CONTEXT_PROFILE}}
-- CTA artikel ID: {{CTA_ID}}
-- CTA artikel EN: {{CTA_EN}}
 - Label tombol: {{CTA_LABEL}}
+<!-- Saran teks tombol saja. Kontak CTA tidak punya default: lihat bagian Kontak untuk CTA. -->
 - Penulis: {{AUTHOR}}
 - Kategori blog: {{BLOG_CATEGORY}}
 - Artikel ID menautkan halaman bahasa Indonesia, artikel EN menautkan halaman bahasa Inggris.
@@ -43,6 +42,14 @@ Dipakai untuk input yang tidak diberikan user atau baris sheet.
 <!-- WordPress: URL situs WordPress (bisa berbeda dari Domain, misalnya https://example.com/blog).
 WordPress auth env: nama environment variable yang berisi base64 dari "username:application password". Satu variabel per situs, misalnya WP_ACME_AUTH. Isinya diset sendiri oleh user, tidak pernah ditulis di sini.
 FAQ ACF field: isi hanya kalau FAQ metabox situs adalah ACF repeater yang "Show in REST API"-nya aktif, dengan format: nama_field (sub_field_pertanyaan, sub_field_jawaban). Kosong = FAQ di-paste manual. -->
+
+## Kontak untuk CTA (pilihan, bukan default)
+
+Ditawarkan sebagai pilihan bernomor setiap kali /convert atau queue bertanya kontak CTA (saluran: telepon/WhatsApp, email, alamat, atau semua). Tidak pernah dipakai tanpa dipilih user di run itu.
+
+| Nama | Saluran | Detail | Catatan |
+|---|---|---|---|
+| TODO | WhatsApp / telepon / email / alamat | | |
 
 ## Layanan dan prioritas CTA
 

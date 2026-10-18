@@ -8,7 +8,7 @@ allowed-tools: Read, Write
 
 **Mission:** Final polish, three compliance checks, On-Page SEO Pack, Schema JSON-LD.
 
-**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Context profile:** if `<project>/context-profile.json` exists, read it before writing and follow its brand voice, facts, and services. Never put prices or rate-card data from it into the article.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Client context:** if `<project>/client.txt` names a client, read `clients/<client>/facts.md` and `<project>/context-profile.json` before writing. Follow the profile's brand voice. `facts.md` wins when the two conflict, and its Defaults answer any input the user has not given. Claim nothing that the user, `facts.md`, or the profile does not support, and never put prices or rate-card data from the profile into the article.
 
 **Dependency:** Requires a NEX-F draft. Missing -> "Run /firstdraft first." If the draft is not in the conversation, read `<project>/05-firstdraft.md`. Read `02-improve.md` and `03-geo.md` the same way for the compliance checks. Take the FAQ delivery mode from the `FAQ delivery:` line in the first 3 lines of `<project>/04-outline.md`; if that is unavailable, use `metabox` when the draft has a `FAQ metabox (paste per field)` block, otherwise `body`.
 
@@ -30,6 +30,7 @@ allowed-tools: Read, Write
 - [ ] Primary keyword in H1, first 100 words, at least one H2, final paragraph?
 - [ ] Semantic keywords from NEX-I distributed naturally?
 - [ ] Internal links present with descriptive anchor text?
+- [ ] External sources from the outline linked inline with descriptive anchors, and no external link that was not verified at /outline?
 - [ ] Heading hierarchy correct (H1 -> H2 -> H3, no skipped levels)?
 - [ ] No duplicate heading text?
 
@@ -94,10 +95,16 @@ notes:
 
 Write valid YAML and escape values when needed. The article must contain no duplicated SEO pack. The schema heading and fenced JSON block must be last.
 
-7. Offer the next action:
+7. **Feature image prompt.** Write `<project>/feature-image-prompt.md` (plain UTF-8 markdown) with one prompt for a 16:9 blog feature image (1920×1080) that shows the article's main idea, not a generic stock scene:
+   - Follow the context profile's `visual_identity` when present (palette as hex codes, illustration or photography style, its imagery rules). Otherwise use a clean editorial style.
+   - Composition: a clear focal subject, with calm space where the theme may overlay the title.
+   - Negative prompt: no text or lettering, no logos or brand marks, no real people's faces, no UI that imitates a real product unless the article is about it.
+   - Alt text: one line from the image alt text template.
+
+8. Offer the next action:
 
 ```text
-Final draft complete and saved to <project>/latest.md. Choose:
+Final draft complete and saved to <project>/latest.md, feature image prompt in <project>/feature-image-prompt.md. Choose:
 1. Revise the article
 2. Run /constructive-self-criticize (recommended before /convert)
 3. Run /convert

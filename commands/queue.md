@@ -26,21 +26,24 @@ Read the header row and find columns **by header name**, not by position. Englis
 
 | Header (Indonesian / English) | Use |
 |---|---|
+| Client / Client | Folder name in `clients/`, for example `gwenchana`. Empty = no client context |
 | Keyword utama / Keyword | Target keyword. Required |
 | Market / Market | Country and language, for example `Indonesia, id`. Required |
-| Domain situs / Domain | Brand site, for internal links and brand colors. Required |
+| Domain situs / Domain | Brand site, for internal links and brand colors. Required unless the client's Defaults give one |
 | Voice / Voice | `brand` (default when empty) or `third-party` |
 | FAQ / FAQ | `body` (default when empty) or `metabox` |
 | Jumlah kata / Word count | Empty = the /outline recommendation from the SERP average |
 | Bahan first-hand / First-hand material | Cases, data, or experience the article may use. Empty = the angle is "Gap-based, no first-hand evidence" |
 | Link internal / Internal links | Optional URLs. When filled, skip link discovery and use only these |
-| Tujuan CTA, Label tombol / CTA destination, Button label | Required when Convert is not `tidak` and Profil is empty |
-| Penawaran & klaim yang boleh / Offer and allowed claims | Offer details and approved claims. Anything not written here is not claimed |
+| Tujuan CTA, Label tombol / CTA destination, Button label | Required when Convert is not `tidak` and Profil is empty, unless the client's Defaults give them |
+| Penawaran & klaim yang boleh / Offer and allowed claims | Offer details and approved claims for this article, on top of the client's `facts.md`. Anything written in neither is not claimed |
 | Convert / Convert | `ya` (default when empty) or `tidak` (no CTA blocks) |
 | Profil / Profile | Empty = `/convert`. `truemission` = `/convert-truemission` (its profile supplies the destination and palette) |
-| Context profile / Context profile | File name (or loose name) in `context-profiles/`, for example `gwenchana-lawrence`. Empty = no profile, noted in the notes. A name that matches no file is an `error` |
+| Context profile / Context profile | File name (or loose name) in `clients/<client>/context-profiles/`, for example `gwenchana-lawrence`. Empty = the client's default profile. A name that matches no file is an `error` |
 | Status | Drives the run |
 | Kode NXS, Slug, Link Doc outline, Link Doc artikel, Terakhir diproses, Catatan Claude | Written by Claude (English: NXS code, Slug, Outline Doc, Article Doc, Last run, Notes) |
+
+An empty column falls back to the client's Defaults in `clients/<client>/facts.md`, then to the stage's own default. A Client that matches no folder is an `error`.
 
 ## 3. Pick the work
 
@@ -61,7 +64,7 @@ Collect each subagent's one-line report for section 6. A subagent that stops wit
 In queue mode the questions the stages normally ask are answered from the sheet row, then from each stage's own recommended default. Record every default you used in the notes. A stage that would need an answer the row cannot give sets the row to `error` and names the column.
 
 **`ready` → `outline-review`** (gate 1)
-1. Project: reuse the Kode NXS if the row has one (continue from the first stage whose file is missing), else create the code and folder as in /research and write them to the row. Copy the row's Context profile to `<project>/context-profile.json` as /research does, without asking.
+1. Project: reuse the Kode NXS if the row has one (continue from the first stage whose file is missing), else create the code and folder as in /research and write them to the row. Write the row's Client to `<project>/client.txt` and copy its context profile to `<project>/context-profile.json` as /research does, without asking.
 2. /research (done in the browser pass above, or here for a single row), /improve, /geo. A keyword that is too broad is an `error` asking for a narrower one. A CAPTCHA or blocked browser falls back to web search mode and the notes say the SERP came from search results, not the live page.
 3. /outline from the row: language and market from Market, word count, Voice, FAQ delivery, and the CTA count by the outline's own rule. Internal links: the row's links, else discovery from the sitemap or `site:` search, keeping at most 5 verified same-domain pages with anchors taken from the target page's own title or topic. Never an unverified URL.
 4. Export the outline for review: write `<project>/04b-outline-review.md` with a **review brief** on top (keyword and market; the search intent and content gap; the information gain angle; the internal links; the CTA count and reason; Voice, FAQ delivery, and word count; every default the queue chose; how to review), a horizontal rule, then the outline. Convert it with `pandoc "<file>" --from=markdown --to=html --wrap=none --output="<project>/outline-review.html"` (no Pandoc → stop with `https://pandoc.org/installing.html`), upload it through the Drive create-file tool as `text/html` titled `[CODE] outline - [H1]`, then delete the `.html`.
@@ -78,7 +81,7 @@ In queue mode the questions the stages normally ask are answered from the sheet 
 3. /constructive-self-criticize. Apply every `must fix` and `should fix` finding; list the `nice to have` ones in the notes. Fixes still add no new claims.
 4. /convert (or /convert-truemission for `Profil: truemission`) unless Convert is `tidak`. Destination, label, and offer come from the row. Colors come from the homepage; if a color cannot be identified, take the closest observed color and note it. For a regulated topic with no authoritative source in the row, skip the claim and note it.
 5. /export-gdoc (into `drive_folder` when set).
-6. Write back: status `review`, article Doc link, timestamp, notes: remaining critique findings, `Needs source` stats, items in the article's `notes:` field, and any CTA colors or claims skipped.
+6. Write back: status `review`, article Doc link, timestamp, notes: remaining critique findings, `Needs source` stats, items in the article's `notes:` field, any CTA colors or claims skipped, and the path of `feature-image-prompt.md`.
 
 **`revisi` → `review`**
 1. Read the article Doc with comments (`includeComments: true`).

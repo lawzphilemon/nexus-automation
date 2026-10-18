@@ -21,7 +21,7 @@ allowed-tools: WebSearch, WebFetch, Read, Write, mcp__claude-in-chrome, mcp__Cla
 
    Every later stage updates the Status column. Show the code prominently: "Your project code is <CODE>. Use /resume <CODE> to come back to it."
 
-   **Context profile.** When `context-profiles/` exists in the working directory, use the profile the user names (a loose name such as "lawrence" matches `gwenchana-lawrence.json`; ignore `_versi-lama/`). If they named none, list the `.json` files there and ask which one, or "none". Copy the chosen file to `<project>/context-profile.json`. Later stages read that copy, so editing a profile never changes an article that has already started. To switch an existing project, copy the new profile over that file and re-run the stages after it.
+   **Client and context profile.** When `clients/` exists in the working directory, use the client the user names (a folder name in `clients/`, any case). If they named none, list the folders and ask which one, or "none". Write the folder name to `<project>/client.txt`. Then pick the context profile from `clients/<client>/context-profiles/` (ignore `_versi-lama/`): the one the user names (a loose name such as "lawrence" matches `gwenchana-lawrence.json`), else the `Context profile:` default in `clients/<client>/facts.md`, else ask. Copy it to `<project>/context-profile.json`. Later stages read that copy, so editing a profile never changes an article that has already started; `facts.md` and `links.md` are read live. To switch an existing project's profile, copy the new one over that file and re-run the stages after it.
 
 2. **Choose the mode**, in this order:
    1. **Live browser mode** (default): use Claude in Chrome if connected. Otherwise use the built-in browser if available. State which browser is used.
@@ -89,8 +89,14 @@ while (Date.now() - started < 8000 && ![...document.querySelectorAll('h1')].some
    - **Featured snippet format** — paragraph / list / table / none
    - **Content gap** — what angle, depth, or question is missing across all top results
 
-7. Save the complete stage output to `<project>/01-research.md` (overwrite if it exists), including the mode used and the capture date, then deliver it in chat.
-8. End: "Run /improve to continue with NEX-I."
+7. **Keyword validation (Semrush and Ubersuggest).** Use each of these connectors that is available in this session, and say which one is missing. Never estimate or fill in a number.
+   - Semrush: keyword overview for the primary keyword in the market's database (volume, keyword difficulty, CPC, intent, trend), plus related and phrase-match keywords.
+   - Ubersuggest: keyword overview and keyword suggestions for the same keyword and location.
+
+   Report one table for the primary keyword, the keywords the user gave, and up to 10 related keywords (keyword turunan) that match the search intent: `Keyword | Semrush volume | Semrush KD | Ubersuggest volume | Ubersuggest SD | Intent | Note`. When the tools differ by more than 2x, say so instead of averaging. End with a recommendation: keep the primary keyword or switch to a variant (with the reason), and the related keywords /improve should use.
+
+8. Save the complete stage output to `<project>/01-research.md` (overwrite if it exists), including the mode used and the capture date, then deliver it in chat.
+9. End: "Run /improve to continue with NEX-I."
 
 ## Rules
 - Never fabricate SERP data. Report only what the live page, search results, or pasted data show.

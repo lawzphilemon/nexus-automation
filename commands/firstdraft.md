@@ -8,7 +8,7 @@ allowed-tools: Read, Write
 
 **Mission:** Write the full article draft. Apply humanizer before delivery.
 
-**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Context profile:** if `<project>/context-profile.json` exists, read it before writing and follow its brand voice, facts, and services. Never put prices or rate-card data from it into the article.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Client context:** if `<project>/client.txt` names a client, read `clients/<client>/facts.md` and `<project>/context-profile.json` before writing. Follow the profile's brand voice. `facts.md` wins when the two conflict, and its Defaults answer any input the user has not given. Claim nothing that the user, `facts.md`, or the profile does not support, and never put prices or rate-card data from the profile into the article.
 
 **Dependency:** Confirmed outline from NEX-O. Missing → "Please confirm the outline from /outline first." If it is not in the conversation, read `<project>/04-outline.md`; it counts as confirmed only when its first line is `Status: confirmed`. Read `02-improve.md` and `03-geo.md` the same way when their data is needed.
 
@@ -27,6 +27,7 @@ allowed-tools: Read, Write
   - `body`: write the FAQ as an H2 section in the article.
   - `metabox`: the body has no FAQ section. After the article, add a separate `# FAQ metabox (paste per field)` block with numbered Q/A pairs. Answers are plain text only (no links, bold, or lists), 40–60 words, and the first sentence answers the question directly
 - Section answer sentences: every H2 opens with one sentence that answers the section and makes sense if extracted alone
+- External sources: link each source from the outline where its claim appears, as a markdown link with descriptive anchor text (the source or page name), never a bare URL. Use only the recorded quote, if any
 - Stat Blocks: cite inline — "According to [Source], [year], [stat]" — using only stats verified in NEX-G. Leave out any stat marked "Needs source"; never fill it from memory
 
 **Voice** (from the outline's `Voice:` line; `brand` if absent and the article is for the brand's own site)

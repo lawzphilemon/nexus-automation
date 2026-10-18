@@ -8,7 +8,7 @@ allowed-tools: WebFetch, WebSearch, Read, Write, Bash
 
 **Mission:** Build the GEO-compliant article outline with real, verified internal links and pre-tagged conversion points.
 
-**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Context profile:** if `<project>/context-profile.json` exists, read it before writing and follow its brand voice, facts, and services. Never put prices or rate-card data from it into the article.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Client context:** if `<project>/client.txt` names a client, read `clients/<client>/facts.md` and `<project>/context-profile.json` before writing. Follow the profile's brand voice. `facts.md` wins when the two conflict, and its Defaults answer any input the user has not given. Claim nothing that the user, `facts.md`, or the profile does not support, and never put prices or rate-card data from the profile into the article.
 
 **Dependency:** Requires NEX-R, NEX-I, NEX-G output. Missing → "Run /research, /improve, /geo first." Read `<project>/01-research.md`, `02-improve.md`, and `03-geo.md` for any output not in the conversation.
 
@@ -35,6 +35,8 @@ Also confirm **Voice: brand (default) | third-party**, i.e. who is speaking in t
 
 If the user has already provided specific internal links to use, skip discovery and go straight to Step 3 using those.
 
+If `<project>/client.txt` names a client, read `clients/<client>/links.md` first. Its service table and notes take priority over topics inferred from URLs. Rows under "Terjadwal" may be used before they reach the sitemap: mark each one `(scheduled, live <date>)` in the outline, and list it in the notes so the publisher confirms it is live before publishing.
+
 Otherwise:
 1. Ask for the target website domain if not already known. Never assume a default domain.
 2. Try fetching the sitemap: `https://{domain}/sitemap.xml`, then `https://{domain}/sitemap_index.xml` if the first fails, via WebFetch. Parse out URLs.
@@ -42,6 +44,12 @@ Otherwise:
 4. From the candidate URLs, keep only same-domain content pages — drop tag/category/pagination/author archive pages. Prioritize by topical relevance to the seed keyword and NEX-I semantic terms.
 5. Present a shortlist (max 8) to the user as: `URL — inferred topic`. Ask which ones fit this article and what anchor text to use for each. If a page's exact topic is unclear from the URL/title alone, briefly fetch that page to check before recommending it.
 6. If sitemap and search both fail to surface anything usable, tell the user directly and ask them to paste links manually. Never invent a URL that wasn't actually found or verified.
+
+## Step 2b — External sources
+
+Find 3–6 authoritative external sources for the article's key claims: official documentation, platform help centers, regulators, standards bodies, primary research, or recognized industry data. Prefer primary over secondary, and current over old. Reuse the stats already verified in NEX-G.
+
+Open each page (browser or WebFetch) and confirm it says what the article will claim. Record for each source: the claim it supports, the source name, the exact URL, its publish or update date, and at most one short quote (under 15 words) if a direct quote helps. A claim without a source that confirms it is softened or dropped, never cited from memory. Never link a competitor agency or a page that sells the same service as the brand.
 
 ## Step 3 — Produce the outline
 
@@ -55,6 +63,7 @@ H2: [section title]
   — Basis: [NEX-I or NEX-G finding that justifies this section]
   — GEO structure: [structure this section uses]
   — Conversion point: [None / Variant 1 or 2 (earlier CTA, only if the CTA count is 2) / Variant 3 (closing CTA)]
+  — External sources: [source name -> verified URL -> claim it supports, or None]
   — Estimated words: [X–Y]
   H3: [subsection if needed]
 
@@ -106,5 +115,6 @@ End: "Confirm the outline above, then run /firstdraft."
 ## Rules
 - Every H2/H3 needs a stated basis. Direct Answer Block + FAQ are non-negotiable in both FAQ delivery modes.
 - Every internal link must be a real, discovered or user-provided URL — never fabricated.
+- Every external source must be opened and confirmed in Step 2b — never cited from memory.
 - Conversion points are tagged here, not decided later during /convert — /convert should place CTA copy at these exact tagged positions, not re-scan the draft.
 - NEX-F is blocked until this outline is confirmed.

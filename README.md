@@ -19,7 +19,9 @@ General-purpose Claude Code plugin for SEO/GEO article research, drafting, conve
 
 `/research` gives every article a unique project code, `NXS-YYMMDD-XXXX` (for example `NXS-261014-7QF3`). Each stage saves its output to that project's own folder, `nexus-output/<CODE>_<slug>/` (`01-research.md` to `05-firstdraft.md`, then `latest.md`), and `nexus-output/PROJECTS.md` lists every project with its status. A new session never overwrites another article's files, and the pipeline can resume after the conversation is compacted or restarted.
 
-**Context profiles.** Put brand context profiles (JSON) in `context-profiles/` in the working directory (git-ignored). `/research` asks which one to use, or takes a loose name such as "lawrence", and copies it to `<project>/context-profile.json`; every writing stage reads that copy. `/queue` takes it from the sheet's Context profile column. Prices and rate-card data in a profile never go into an article.
+**Clients.** Each client gets a folder in `clients/<client>/` in the working directory (git-ignored): `context-profiles/` (brand JSON profiles), `facts.md` (Defaults such as domain, voice, FAQ delivery and CTA; team roles; allowed and forbidden claims; usable cases), and `links.md` (service pages and scheduled posts that are not in the sitemap yet). `/research` asks for the client and profile, writes `<project>/client.txt`, and copies the profile to `<project>/context-profile.json`; every writing stage reads them, and `facts.md` wins over the profile. `/queue` takes both from the sheet. Prices and rate-card data in a profile never go into an article.
+
+`/research` also validates the keyword with Semrush and Ubersuggest when those connectors are available. `/outline` collects 3–6 verified external sources, `/firstdraft` cites them inline, and `/finaldraft` writes a 16:9 feature image prompt to `feature-image-prompt.md`.
 
 ### `/resume` — NEX-0
 

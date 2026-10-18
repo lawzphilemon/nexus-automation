@@ -45,6 +45,8 @@ Otherwise:
 5. Present a shortlist (max 8) to the user as: `URL — inferred topic`. Ask which ones fit this article and what anchor text to use for each. If a page's exact topic is unclear from the URL/title alone, briefly fetch that page to check before recommending it.
 6. If sitemap and search both fail to surface anything usable, tell the user directly and ask them to paste links manually. Never invent a URL that wasn't actually found or verified.
 
+**Existing coverage (cannibalization).** If `<project>/00-cannibalization.md` exists (queue runs), follow it and skip this check. Otherwise, while scanning `links.md`, the sitemap, and the `site:` results, look for pages in the article's language that already answer the same search intent: compare the intent from NEX-I with each page's title, H1, and H2s, not the exact keyword. A page that already answers the main question (the keyword is its topic, a synonym of it, or one of its H2s), or covers the same topic with the same angle, goes to the user before the outline is written, with its URL and the H2 that shows the overlap, and three options: update that article instead, take a clearly different angle (name it), or stop. Write the outline only after the user picks the angle. A page that shares only one subtopic becomes an internal link for that subtopic, and the outline does not cover it again.
+
 ## Step 2b — External sources
 
 Find 3–6 authoritative external sources for the article's key claims: official documentation, platform help centers, regulators, standards bodies, primary research, or recognized industry data. Prefer primary over secondary, and current over old. Reuse the stats already verified in NEX-G.

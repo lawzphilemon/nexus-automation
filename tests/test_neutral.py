@@ -15,6 +15,12 @@ contacts = [f"{p.relative_to(root)}:{n}" for d in ("commands", "skills", "templa
             for p in (root / d).rglob("*") if p.is_file()
             for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1) if contact.search(line)]
 assert not contacts, f"contact details in the plugin: {contacts}"
+# No default brand: no fallback client, WordPress site, or auth variable.
+fallbacks = [f"{p.relative_to(root)}:{n}" for d in ("commands", "scripts", "templates")
+             for p in (root / d).rglob("*") if p.is_file() and p.suffix != ".pyc"
+             for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1)
+             if re.search(r"default_client|wp_site|WP_NEXUS_AUTH", line)]
+assert not fallbacks, f"default brand fallbacks in the plugin: {fallbacks}"
 convert = (root / "commands" / "convert.md").read_text(encoding="utf-8")
 assert "Contact question" in convert and "Contact question first" in (root / "commands" / "queue.md").read_text(encoding="utf-8")
 

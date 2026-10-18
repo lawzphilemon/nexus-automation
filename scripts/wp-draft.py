@@ -3,7 +3,7 @@
 
 Usage:
   wp-draft.py <project>/latest.md --site https://example.com [--lang id] [--category slug[,slug]]
-              [--faq-acf field:question:answer] [--auth-env NAME] [--dry-run]
+              [--faq-acf field:question:answer] --auth-env NAME [--dry-run]
 
 Title = the YAML h1, slug = the last segment of the YAML slug, content = the article body after the H1 up to
 "# FAQ metabox" or "# Schema Markup". ```html fences (the /convert CTA blocks) become Custom HTML blocks.
@@ -17,7 +17,7 @@ and its two sub-fields in a third request, with the same rule; without it the FA
 post's language, and becomes the featured image; same rule again. The JSON-LD is not sent: it stays in the article
 Doc for a manual paste.
 A post that already has this slug (any status) stops the run, so a re-run never creates a duplicate.
-Auth: the environment variable named by --auth-env (default WP_NEXUS_AUTH) = base64 of "username:application
+Auth: the environment variable named by --auth-env (required; there is no default site or brand) = base64 of "username:application
 password" (WordPress Users > Profile > Application Passwords). One variable per site.
 Needs Pandoc in PATH. Prints the draft's edit and preview links.
 """
@@ -173,7 +173,7 @@ def main():
     p.add_argument("--faq-acf", help="ACF repeater for the FAQ as field:question:answer, e.g. faq:faq_title:faq_content")
     p.add_argument("--image-dir", help="local folder of synced Drive images (Google Drive for desktop)")
     p.add_argument("--image-prefix", help="file name prefix of this article's image, e.g. ACM-IMG-NXS-261018-K7RW")
-    p.add_argument("--auth-env", default="WP_NEXUS_AUTH", help="environment variable that holds the auth")
+    p.add_argument("--auth-env", required=True, help="environment variable that holds the auth (the client's WordPress auth env)")
     p.add_argument("--dry-run", action="store_true", help="print what would be sent; no network, no auth")
     a = p.parse_args()
 

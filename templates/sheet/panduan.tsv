@@ -4,7 +4,7 @@ Keywords	Ya	Keyword target artikel.
 Volume	Tidak	Volume dari KW research. Dibandingkan dengan Semrush dan Ubersuggest saat research.
 Judul Artikel	Tidak	Judul kerja. Dipakai sebagai H1 outline, hanya diubah kalau lebih dari 60 karakter, keyword utama belum masuk, atau SERP menunjukkan sudut lain. Perubahannya dijelaskan di review brief.
 Lang	Ya, kecuali Market diisi	Bahasa artikel: id atau en. id berarti Market Indonesia, id. Untuk en, isi juga kolom Market.
-Notes	Tidak	Brief dari KW research: pengamatan SERP, gap, sudut, link komersial, dan larangan. Dicek ulang ke SERP live. Notes hanya bisa membatasi klaim, tidak menambah klaim. Tulis PRIORITAS supaya baris diproses lebih dulu. Halaman layanan di bagian Komersial dipakai sebagai tujuan CTA kalau kolom Tujuan CTA kosong. Tulis kanibalisasi OK kalau overlap dengan artikel lama memang diterima.
+Notes	Tidak	Brief dari KW research: pengamatan SERP, gap, sudut, link komersial, dan larangan. Dicek ulang ke SERP live. Notes hanya bisa membatasi klaim, tidak menambah klaim. Tulis PRIORITAS supaya baris diproses lebih dulu. Halaman layanan di bagian Komersial dipakai sebagai link internal. Tulis kanibalisasi OK kalau overlap dengan artikel lama memang diterima.
 Market	Ya, kecuali Lang = id	Negara dan bahasa, misalnya Indonesia, id.
 Domain situs	Ya, kecuali ada di Defaults klien	Situs brand, untuk link internal, cek kanibalisasi, dan warna CTA.
 Voice	Tidak	brand atau third-party. Kosong = Defaults klien, lalu brand.
@@ -12,8 +12,8 @@ FAQ	Tidak	body atau metabox. Kosong = Defaults klien, lalu body.
 Jumlah kata	Tidak	Kosong = rekomendasi dari rata-rata SERP.
 Bahan first-hand	Tidak	Kasus, data, atau pengalaman yang boleh dipakai. Kosong = sudut artikel dari celah konten SERP saja.
 Link internal	Tidak	URL yang wajib dipakai. Kosong = halaman yang disebut di Notes, lalu links.md klien dan sitemap situs. Semua link dicek dulu.
-Tujuan CTA	Tidak, kalau ada di Notes atau Defaults klien	Link WhatsApp, form kontak, atau halaman layanan. Urutan: kolom ini, halaman layanan di Notes, lalu Defaults klien.
-Label tombol	Ya, jika Convert ya, kecuali ada di Defaults klien	Teks tombol CTA.
+Tujuan CTA	Tidak	Saran kontak CTA: nomor telepon/WhatsApp, email, atau alamat. Tidak ada kontak default: di awal run queue bertanya di chat saluran mana (telepon, email, alamat, atau semua) dan detailnya. Isi kolom ini dan daftar Kontak untuk CTA di facts.md hanya muncul sebagai pilihan.
+Label tombol	Tidak	Saran teks tombol CTA, dikonfirmasi di pertanyaan kontak.
 Penawaran & klaim yang boleh	Tidak	Klaim tambahan khusus artikel ini, di luar facts.md klien. Yang tidak tertulis di keduanya tidak diklaim.
 Convert	Tidak	ya (default) atau tidak (tanpa blok CTA).
 Status	Ya	Mengatur proses. Kosong = dilewati. Lihat tabel status di bawah.

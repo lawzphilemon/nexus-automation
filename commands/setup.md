@@ -39,7 +39,7 @@ Client name: the argument, else ask for a short kebab-case name (for example `ac
 
 Copy `${CLAUDE_PLUGIN_ROOT}/templates/client/` to `clients/<name>/` (`facts.md`, `links.md`, `context-profiles/README.md`, `conversion.example.md`) and fill `{{CLIENT_NAME}}` and `{{DATE}}`.
 
-Ask in one message for what only the user knows (each may be skipped): the website domain; the article languages; the CTA destination and button label per language; the author's name, role, and public profile URL; the blog category slug; what the brand must never claim; and the case studies the client allows, with what may be named.
+Ask in one message for what only the user knows (each may be skipped): the website domain; the article languages; the contacts the brand may offer in CTAs (for each: a name, a phone number and whether it is for WhatsApp or calls, an email, an address), saved in `facts.md` under **Kontak untuk CTA** as choices only, never as a default; the CTA button label per language; the author's name, role, and public profile URL; the blog category slug; what the brand must never claim; and the case studies the client allows, with what may be named.
 
 Suggest the client's initials from its brand name (2 to 4 capital letters, for example `ACM` for Acme) and save the confirmed value as `Inisial brand`; every Doc name starts with it.
 
@@ -48,7 +48,7 @@ Then verify and prefill from the site, read-only:
 - The domain loads; take the brand name from the homepage title.
 - FAQ delivery: run `python "${CLAUDE_PLUGIN_ROOT}/scripts/faq-scan.py" <1-3 post URLs>` and suggest `body` or `metabox` from the result.
 - `links.md` from the sitemap (`/sitemap.xml`, else `/sitemap_index.xml`): service and landing pages, other pages, and blog posts split by language (for example an `/id/` path prefix), each with its lastmod. Skip tag, category, author, and pagination pages.
-- Every CTA URL the user gave: open it and keep it only if it loads.
+- Contacts are written as the user gave them (a phone number cannot be checked from here). Every service page URL the user gave: open it and keep it only if it loads.
 - Context profile: if the user has one, save it in `context-profiles/` and put its file name in the `Context profile` Default; else leave the Default empty (the stages then use `facts.md` alone).
 
 Anything still unknown is written as `TODO`. Show the filled Defaults block before saving.

@@ -1,13 +1,20 @@
 ---
 name: wa-cta-standard
-description: Build contact CTA HTML blocks for articles in WordPress Classic Editor. Use for one or two blocks per article (an optional earlier CTA and the closing CTA) in three site-branded visual variants with a user-confirmed destination and no hardcoded brand or contact defaults.
+description: Build contact CTA HTML blocks for articles in WordPress Classic Editor. Use for one or two blocks per article (an optional earlier CTA and the closing CTA) in three site-branded visual variants, with the phone, email, or address the user chose for this run and no default contact.
 ---
 
 # Contact CTA Visual Standard
 
 Use pure inline-style HTML without `wp:html` block comments. The output is for the WordPress Classic Editor Text tab.
 
-Use the CTA destination and button label confirmed by `/convert`. It may point to WhatsApp, a contact form, email, booking page, or product page. Never hardcode or reuse contact details, credentials, or brand values.
+Use only the channels, contact details, and button labels the user chose in the `/convert` contact question for this run: phone (WhatsApp chat or call), email, address, or all of them. There is no default contact. Never hardcode or reuse contact details, credentials, or brand values.
+
+## Channels
+
+- One chosen link channel (phone or email): one button, as in the variants below.
+- Two link channels: two buttons side by side, with `display: inline-block; margin: 4px;` on each. The first chosen channel uses the variant's filled button; the second uses an outline button: `background: transparent; color: {accent}; border: 2px solid {accent};` with the same padding and font (on Variant 2, use `color: #ffffff; border-color: #ffffff;`).
+- Address: a text line below the buttons, 14px, in the variant's body color, starting with the label the user chose (for example "Alamat:"). Link it only to a maps URL the user gave.
+- Address only: the address line replaces the button.
 
 ## Color system
 
@@ -61,6 +68,7 @@ Use at the natural close of the article.
 
 - Use one or two CTA blocks per article: the closing CTA (Variant 3) always, plus an earlier CTA (Variant 1 or 2) only when the outline's CTA count is 2.
 - Reference the preceding section instead of using generic CTA filler.
-- Escape or encode the confirmed destination correctly in the HTML.
+- Escape or encode every confirmed link correctly in the HTML (`&` as `&amp;`, the WhatsApp message and email subject URL-encoded).
+- Every phone number, email, and address in the block comes from this run's contact question, never from memory, the website, or an earlier article.
 - Deliver plaintext HTML with an implementation note.
 - Never fabricate contact details, credentials, colors, products, or claims.

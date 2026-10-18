@@ -21,10 +21,25 @@ Retrieve the `wa-cta-standard` and `product-upsell` skills before writing any ou
 Confirm these inputs from context or ask for them:
 
 1. **Target website domain** for brand-color detection.
-2. **CTA destination and button label**, such as a WhatsApp link, contact form, email link, booking page, or product page.
+2. **CTA contact**: always asked, see the contact question below.
 3. **Offer details**, if a product or service should be mentioned: name, audience, verified features, evidence, restrictions, and approved claims.
 
-Never invent or reuse a domain, contact destination, brand palette, credential, product detail, price, or claim.
+Never invent or reuse a domain, contact detail, brand palette, credential, product detail, price, or claim.
+
+### Contact question (every run, before any CTA is written)
+
+There is no default phone number, email, or address, in this plugin or anywhere else. Before writing a CTA block, ask the user in one message:
+
+1. **Channel:** phone, email, address, or all of them (any combination is fine).
+2. **Details for each chosen channel:**
+   - Phone: the number, and whether the button opens a WhatsApp chat or a phone call. For WhatsApp, an optional pre-filled message.
+   - Email: the address, and an optional subject line.
+   - Address: the full address as it should appear, and an optional maps link the user supplies.
+3. **Button label** for each button.
+
+When `clients/<client>/facts.md` has a **Kontak untuk CTA** list, or the queue row or the user's notes give a contact or label, show them in the same message as numbered choices. They are choices only: the user picks one, several, or types new details. Never choose for the user, never take a contact from the website, the context profile, or an earlier article or session without asking, and never fill a missing detail yourself. In queue mode the queue asks this once per brand at the start of the run (`queue.md` section 3) and passes the answer here: use that answer and ask nothing more.
+
+Build the links from the answer: WhatsApp `https://wa.me/<digits>` (international format with no `+` or spaces; a number starting with `0` gets the country code of the article's market, for example `0812…` → `62812…` for Indonesia), with `?text=` and the URL-encoded message when one was given; phone call `tel:+<digits>`; email `mailto:<address>`, with `?subject=` and the URL-encoded subject when one was given. An address is text, linked only to a maps URL the user gave. Confirm the channels, details, and labels in one line before writing.
 
 ### Brand-color detection
 
@@ -32,7 +47,7 @@ Never invent or reuse a domain, contact destination, brand palette, credential, 
 2. Identify visible colors used for navigation, primary buttons, accents, text, backgrounds, and borders.
 3. Map them to the `wa-cta-standard` color slots.
 4. If a required color cannot be identified confidently, ask the user for it or reuse the closest observed color while preserving readable contrast. Do not invent a brand color.
-5. Confirm the palette and CTA destination in one line before proceeding.
+5. Confirm the palette and the CTA contact in one line before proceeding.
 
 ## Step 1 — Locate conversion points
 
@@ -62,7 +77,7 @@ Follow `product-upsell` using only verified offer details from Step 0.
 
 ## Step 3 — Write and inject CTA blocks
 
-Follow `wa-cta-standard` for the three HTML variants. Match each block's copy to the section immediately above it. Use the confirmed CTA destination and button label.
+Follow `wa-cta-standard` for the three HTML variants. Match each block's copy to the section immediately above it. Use only the channels, details, and button labels confirmed in the contact question.
 
 Never exceed two CTA blocks per article.
 
@@ -73,6 +88,7 @@ Before delivery, verify:
 - No fabricated claims, prices, statistics, testimonials, credentials, or product details.
 - No guaranteed outcomes or unsupported comparisons.
 - Every link and color comes from confirmed input or the target website.
+- Every phone number, email, and address in a CTA block was chosen in this run's contact question.
 - Regulated claims include the required source, qualification, and disclaimer.
 - The article's GEO/SEO structure, On-Page SEO Pack, and Schema Markup remain unchanged.
 

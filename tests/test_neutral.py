@@ -9,6 +9,15 @@ hits = [f"{p.relative_to(root)}:{n}" for d in ("commands", "skills", "scripts", 
         for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1) if banned.search(line)]
 assert not hits, f"client-specific text in the plugin: {hits}"
 
+# No default contact: CTA phone numbers, emails, and addresses are asked every run, never shipped.
+contact = re.compile(r"[\w.+-]+@[\w-]+\.[a-z]{2,}|wa\.me/\d|tel:\+?\d|(?<![\w-])\+?\d{2,4}[\s-]?\d{3,4}[\s-]?\d{3,5}(?![\w-])", re.I)
+contacts = [f"{p.relative_to(root)}:{n}" for d in ("commands", "skills", "templates")
+            for p in (root / d).rglob("*") if p.is_file()
+            for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1) if contact.search(line)]
+assert not contacts, f"contact details in the plugin: {contacts}"
+convert = (root / "commands" / "convert.md").read_text(encoding="utf-8")
+assert "Contact question" in convert and "Contact question first" in (root / "commands" / "queue.md").read_text(encoding="utf-8")
+
 queue = (root / "commands" / "queue.md").read_text(encoding="utf-8")
 headers = (root / "templates" / "sheet" / "antrean.tsv").read_text(encoding="utf-8").splitlines()[0].split("\t")
 missing = [h for h in headers if h not in queue]

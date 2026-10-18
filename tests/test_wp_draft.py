@@ -71,6 +71,7 @@ new_layout = '''# FAQ metabox (paste per field)
 assert wp_draft.faq_rows(new_layout) == [{'faq_title': 'Q one?', 'faq_content': 'Answer one.'},
                                          {'faq_title': 'Q two?', 'faq_content': 'Answer two.'}]
 assert wp_draft.faq_rows('# H1\n\nNo FAQ.\n') == []
+assert wp_draft.faq_rows(new_layout, 'q', 'a')[0] == {'q': 'Q one?', 'a': 'Answer one.'}
 
 calls = []
 def fake_api(site, path, auth, data=None, warn=False):
@@ -111,7 +112,8 @@ with tempfile.TemporaryDirectory() as tmp:
     assert not wp_draft.set_feature_image('https://x', 'a', post, image, 'Alt') and calls == ['media']
 
 if shutil.which('pandoc'):
-    data = wp_draft.payload(md, 'id')
+    assert 'acf' not in wp_draft.payload(md, 'id')  # no --faq-acf: the FAQ is not sent
+    data = wp_draft.payload(md, 'id', 'faq:faq_title:faq_content')
     assert data['slug'] == 'ctr-adalah' and data['status'] == 'draft' and data['lang'] == 'id'
     assert '<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>' in data['content']
     assert '<h2 id="closing">Closing</h2>' in data['content']

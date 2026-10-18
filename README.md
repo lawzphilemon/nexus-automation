@@ -9,19 +9,52 @@ General-purpose Claude Code plugin for SEO/GEO article research, drafting, conve
 /plugin install nexus-automation@nexus-automation
 ```
 
-## Claude Code pipeline
+The repository must be readable by your GitHub account. Update later with `/plugin marketplace update nexus-automation` and restart Claude.
+
+## Quick start
+
+1. Make an empty folder for your work (for example `content-workspace`) and open Claude Code in it. Every session for these articles starts in this folder.
+2. Run `/nexus-automation:setup acme` (use your client's short name). It checks Pandoc, Python, the Google connectors, and a browser; creates `nexus-output/` and `clients/acme/` from the template; prefills the client from its website (sitemap links, FAQ mode); checks the client's WordPress read-only when you want drafts there; and creates the Google Sheet queue.
+3. Fill the `TODO` lines in `clients/acme/facts.md`: what the brand may and may not claim, its services, and its team.
+4. Write an article by hand with `/nexus-automation:research <keyword>` and follow each stage's prompt, or paste keyword rows into the sheet, set Status to `ready`, and run `/nexus-automation:queue`.
+
+Add another client any time with `/nexus-automation:setup <name>`. Each client keeps its own facts, links, profiles, CTA, and WordPress site.
+
+## Workspace
 
 ```text
-/research → /improve → /geo → /outline → /firstdraft → /finaldraft → /constructive-self-criticize → [/convert | /convert-truemission] → /export-gdoc
+content-workspace/
+├── clients/
+│   └── acme/
+│       ├── facts.md            Defaults (domain, voice, FAQ, CTA, author, category, WordPress), claims, team, cases
+│       ├── links.md            service pages, scheduled posts, live posts from the sitemap
+│       ├── context-profiles/   optional brand JSON profiles (one per author or tone)
+│       └── conversion.md       optional CTA, offer, source, and compliance rules for /convert
+└── nexus-output/
+    ├── queue.json              the queue sheet, default client, optional fallback WordPress site
+    ├── PROJECTS.md             every article with its status
+    └── NXS-YYMMDD-XXXX_<slug>/ one folder per article
+```
+
+`clients/` and `nexus-output/` stay on your machine. Nothing leaves it except the Google Docs and WordPress drafts the pipeline creates for you, and it never publishes, shares, or sends anything.
+
+## Pipeline
+
+```text
+/research → /improve → /geo → /outline → /firstdraft → /finaldraft → /constructive-self-criticize → /convert → /export-gdoc
 ```
 
 `/humanize` also works standalone.
 
 `/research` gives every article a unique project code, `NXS-YYMMDD-XXXX` (for example `NXS-261014-7QF3`). Each stage saves its output to that project's own folder, `nexus-output/<CODE>_<slug>/` (`01-research.md` to `05-firstdraft.md`, then `latest.md`), and `nexus-output/PROJECTS.md` lists every project with its status. A new session never overwrites another article's files, and the pipeline can resume after the conversation is compacted or restarted.
 
-**Clients.** Each client gets a folder in `clients/<client>/` in the working directory (git-ignored): `context-profiles/` (brand JSON profiles), `facts.md` (Defaults such as domain, voice, FAQ delivery and CTA; team roles; allowed and forbidden claims; usable cases), and `links.md` (service pages and scheduled posts that are not in the sitemap yet). `/research` asks for the client and profile, writes `<project>/client.txt`, and copies the profile to `<project>/context-profile.json`; every writing stage reads them, and `facts.md` wins over the profile. `/queue` takes both from the sheet. Prices and rate-card data in a profile never go into an article.
+**Clients.** `/research` asks for the client and profile, writes `<project>/client.txt`, and copies the profile to `<project>/context-profile.json` (a client without profiles works from `facts.md` alone); every writing stage reads them, and `facts.md` wins over the profile. `/queue` takes both from the sheet. Prices and rate-card data in a profile never go into an article.
 
 `/research` also validates the keyword with Semrush and Ubersuggest when those connectors are available. `/outline` collects 3–6 verified external sources, `/firstdraft` cites them inline, and `/finaldraft` writes a 16:9 feature image prompt to `feature-image-prompt.md`.
+
+### `/setup` — NEX-S
+
+Sets up the workspace folders, a client from `templates/client/`, a read-only check of the client's WordPress (Application Password, Polylang, Yoast, ACF FAQ field), and the Google Sheet queue with its Antrean and Panduan tabs. It never asks for or stores a password, never overwrites an existing file, and marks anything it cannot verify as `TODO`.
 
 ### `/resume` — NEX-0
 
@@ -70,22 +103,17 @@ Adds one or two site-branded contact CTA blocks (always a closing CTA; an earlie
 - Uses only supplied or verified offer details.
 - Applies stronger source and disclaimer checks to regulated or high-stakes claims.
 - Never supplies a default domain, contact, palette, credential, product, or claim.
+- Reads `clients/<client>/conversion.md` when the client has one: a fixed palette, CTA channel, offer mapping, required sources, and compliance rules (see `templates/client/conversion.example.md`).
 
 Requires `WebFetch` and `WebSearch`.
-
-### `/convert-truemission` — NEX-U-TM
-
-Runs the same conversion workflow with an isolated TrueMission/Prudential profile containing the approved domain, WhatsApp destination, brand palette, RIPLAY sourcing rules, UP planning formula, and insurance compliance checks.
-
-This profile is Claude Code-only and is never loaded by the general `/convert` command.
 
 ### `/queue` — NEX-Q
 
 Runs the whole pipeline from a Google Sheet, one row per article, with two review gates and no questions in chat. `ready` rows first get a cannibalization check: by search intent, not exact keyword, against the client's `links.md`, the sitemap, a `site:` search, the sheet's articles in progress, and the other `ready` rows of the run. Rows that share an intent are flagged together, and a row whose question an existing page already answers goes to `error` with that URL in the notes and three options (update that article, give the row a clearly different angle and set it to `ready` again, or skip it); a partial overlap continues with a named angle and opens the review brief. Then they get research, intent, GEO, and an outline, exported to a Google Doc (`outline-review`). After you comment and set `outline-approved`, the queue writes the draft, final draft, self-critique, CTA blocks, and the article Doc (`review`). Comment and set `revisi` for another pass, set `approved` to send the article to WordPress as a draft (`wp-draft`), or set `done`.
 
-Up to 3 rows run in parallel, one subagent each; `/research` runs one row at a time because it drives the browser. Config lives in `nexus-output/queue.json` (`spreadsheet_id`, `tab`, optional `drive_folder`, optional `wp_site`, optional `default_client`). Columns are found by header name: Keyword, Market, Domain are required; Voice, FAQ, Word count, First-hand material, Internal links, CTA destination, Button label, Offer and allowed claims, Convert, Profile are optional or conditional. The sheet can also start with the keyword-research columns No, Month - Year, Keywords, Volume, Judul Artikel, Lang, and Notes, so research rows can be pasted in as they are: Judul Artikel becomes the working H1, Lang can stand in for Market (`id` = Indonesia), and Notes are the research brief (SERP observations, gap, angle, link and CTA hints, restrictions) that every stage checks against live data. Claude writes the NXS code, slug, both Doc links, last run, and notes. It never publishes, shares, or sends anything. Only Doc comments are read back, not edits typed into the Doc.
+Up to 3 rows run in parallel, one subagent each; `/research` runs one row at a time because it drives the browser. Config lives in `nexus-output/queue.json` (`spreadsheet_id`, `tab`, optional `drive_folder`, optional `wp_site`, optional `default_client`). Columns are found by header name: Keyword, Market, Domain are required; Voice, FAQ, Word count, First-hand material, Internal links, CTA destination, Button label, Offer and allowed claims, Convert, Context profile, Client are optional or conditional. The sheet can also start with the keyword-research columns No, Month - Year, Keywords, Volume, Judul Artikel, Lang, and Notes, so research rows can be pasted in as they are: Judul Artikel becomes the working H1, Lang can stand in for Market (`id` = Indonesia), and Notes are the research brief (SERP observations, gap, angle, link and CTA hints, restrictions) that every stage checks against live data. Claude writes the NXS code, slug, both Doc links, last run, and notes. It never publishes, shares, or sends anything. Only Doc comments are read back, not edits typed into the Doc.
 
-`scripts/wp-draft.py` sends an `approved` article's `latest.md` to WordPress through the REST API as a **draft** (never published): the H1 as the title, the slug, the article body with the CTA blocks as Custom HTML blocks, the Polylang language (`--lang`), the categories (`--category`, slugs looked up in that language; the queue takes them from the row's Notes or the client's `Kategori blog` Default), the Yoast SEO title and meta description from the YAML `title` and `meta-description`, and the FAQ metabox Q/A pairs to the ACF repeater `faq` (`faq_title`, `faq_content`, the gwenchana.digital field names), and the feature image: when `feature-image.png` (or `.jpg`, `.jpeg`, `.webp`) sits next to `latest.md`, it is uploaded to the media library with the `**Alt text:**` line of `feature-image-prompt.md` as alt text and the post's language, then set as the featured image. It stops instead of creating a duplicate when the slug already exists. An unknown category slug, Yoast fields or FAQ rows the site refuses to save, or a feature image it cannot set become notes; the draft is still created. The JSON-LD and the "Diperbarui" byline date stay manual, and so does the feature image when no file was saved. Auth comes from `WP_NEXUS_AUTH` (base64 of `username:application password`, from WordPress Users > Profile > Application Passwords); `--dry-run` shows the payload without sending anything.
+`scripts/wp-draft.py` sends an `approved` article's `latest.md` to WordPress through the REST API as a **draft** (never published): the H1 as the title, the slug, the article body with the CTA blocks as Custom HTML blocks, the Polylang language (`--lang`), the categories (`--category`, slugs looked up in that language; the queue takes them from the row's Notes or the client's `Kategori blog` Default), the Yoast SEO title and meta description from the YAML `title` and `meta-description`, the FAQ metabox Q/A pairs to an ACF repeater when `--faq-acf field:question:answer` is given (the queue passes the client's `FAQ ACF field` Default), and the feature image: when `feature-image.png` (or `.jpg`, `.jpeg`, `.webp`) sits next to `latest.md`, it is uploaded to the media library with the `**Alt text:**` line of `feature-image-prompt.md` as alt text and the post's language, then set as the featured image. It stops instead of creating a duplicate when the slug already exists. An unknown category slug, Yoast fields or FAQ rows the site refuses to save, or a feature image it cannot set become notes; the draft is still created. The JSON-LD and the "Diperbarui" byline date stay manual, and so does the feature image when no file was saved. Auth comes from the environment variable named by `--auth-env` (default `WP_NEXUS_AUTH`; the queue passes the client's `WordPress auth env`), holding base64 of `username:application password` from WordPress Users > Profile > Application Passwords, one variable per site. The site is the client's `WordPress` Default, else `wp_site` in `queue.json`. `--dry-run` shows the payload without sending anything.
 
 ### `/export-gdoc` — NEX-GD
 
@@ -110,4 +138,9 @@ Humanizes Indonesian, English, or mixed text while preserving meaning and E-E-A-
 - `humanizer-id` and `humanizer-en` — language-specific humanization.
 - `wa-cta-standard` — three generic, site-branded CTA layouts.
 - `product-upsell` — evidence-gated product or service mapping for any industry.
-- `truemission-prudential` — isolated Claude-only profile loaded by `/convert-truemission`.
+
+## Upgrading from 2.x
+
+- `/convert-truemission` is gone. Put a client's fixed CTA, offer, and compliance rules in `clients/<client>/conversion.md`; `/convert` reads it for that client only.
+- The sheet's `Profil` column is no longer read; you can delete it.
+- WordPress settings move into each client's `facts.md` (`WordPress`, `WordPress auth env`, `FAQ ACF field`). `wp_site` in `queue.json` and `WP_NEXUS_AUTH` still work as the fallback, but the FAQ is only sent when the client names its `FAQ ACF field`.

@@ -1,0 +1,12 @@
+draft
+ready
+running
+outline-review
+outline-revisi
+outline-approved
+review
+revisi
+approved
+wp-draft
+done
+error

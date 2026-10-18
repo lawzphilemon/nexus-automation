@@ -1,10 +1,10 @@
 {
   "name": "nexus-automation",
   "displayName": "NEXUS Automation",
-  "version": "2.12.0",
-  "description": "Full SEO/GEO content pipeline: SERP analysis, intent + E-E-A-T gap analysis, query fan-out + GEO structure prescription, outline with real internal link discovery, first draft, final polish with SEO pack + schema, standalone humanizer, conversion layer, and Google Docs export.",
+  "version": "3.0.0",
+  "description": "Multi-client SEO/GEO content pipeline: setup wizard, SERP analysis, intent and E-E-A-T gaps, query fan-out and GEO structure, outline with verified internal links and a cannibalization check, first and final draft with SEO pack and schema, humanizer, conversion layer, Google Docs export with read-back check, a Google Sheet queue with two review gates, and WordPress drafts.",
   "author": { "name": "Lawrence Philemon" },
   "commands": "./commands",
-  "skills": ["./skills", "./claude-skills"],
+  "skills": ["./skills"],
   "keywords": ["seo", "geo", "content", "cta", "conversion", "internal-links", "humanizer", "google-docs", "export"]
 }

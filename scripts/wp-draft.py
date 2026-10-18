@@ -2,7 +2,8 @@
 """Send a finished NEXUS article (latest.md) to WordPress as a draft. Never publishes: the status is always "draft".
 
 Usage:
-  wp-draft.py <project>/latest.md --site https://example.com [--lang id] [--category slug[,slug]] [--dry-run]
+  wp-draft.py <project>/latest.md --site https://example.com [--lang id] [--category slug[,slug]]
+              [--faq-acf field:question:answer] [--auth-env NAME] [--dry-run]
 
 Title = the YAML h1, slug = the last segment of the YAML slug, content = the article body after the H1 up to
 "# FAQ metabox" or "# Schema Markup". ```html fences (the /convert CTA blocks) become Custom HTML blocks.
@@ -10,13 +11,14 @@ Title = the YAML h1, slug = the last segment of the YAML slug, content = the art
 does not have is printed as a note and the draft keeps the default category.
 After the draft exists, the YAML title and meta-description go to the Yoast SEO title and meta description in a
 second request; if WordPress refuses that, the draft stays and a note says to paste them by hand.
-The "# FAQ metabox" Q/A pairs go to the ACF repeater `faq` (faq_title, faq_content) in a third request, with the
-same rule. A feature-image.{png,jpg,jpeg,webp} next to latest.md is uploaded to the media library, gets the
+With --faq-acf (for example `faq:faq_title:faq_content`), the "# FAQ metabox" Q/A pairs go to that ACF repeater
+and its two sub-fields in a third request, with the same rule; without it the FAQ is not sent. A feature-image.{png,jpg,jpeg,webp} next to latest.md is uploaded to the media library, gets the
 `**Alt text:**` line of feature-image-prompt.md (else the YAML image-alt-text-template without brackets) and the
 post's language, and becomes the featured image; same rule again. The JSON-LD is not sent: it stays in the article
 Doc for a manual paste.
 A post that already has this slug (any status) stops the run, so a re-run never creates a duplicate.
-Auth: WP_NEXUS_AUTH = base64 of "username:application password" (WordPress Users > Profile > Application Passwords).
+Auth: the environment variable named by --auth-env (default WP_NEXUS_AUTH) = base64 of "username:application
+password" (WordPress Users > Profile > Application Passwords). One variable per site.
 Needs Pandoc in PATH. Prints the draft's edit and preview links.
 """
 import argparse
@@ -55,15 +57,14 @@ def article_body(rest):
                   body, flags=re.M | re.S).strip()
 
 
-def faq_rows(rest):
+def faq_rows(rest, question="faq_title", answer="faq_content"):
     """Q/A pairs of the "# FAQ metabox" block. Accepts `1. **Q?**` + an indented answer paragraph (2.11.0+) and the
     older `1. Q?` with the answer on the next line."""
     m = re.search(r"^# FAQ metabox[^\n]*\n(.*?)(?=^# |\Z)", rest, flags=re.M | re.S)
     rows = []
     for item in re.split(r"^\d+\.[ \t]+", m[1], flags=re.M)[1:] if m else []:
         q, _, a = item.strip().partition("\n")
-        # shortcut: field names are gwenchana.digital's ACF repeater; make them flags when another site needs the FAQ
-        rows.append({"faq_title": q.strip().strip("*").strip(), "faq_content": " ".join(a.split())})
+        rows.append({question: q.strip().strip("*").strip(), answer: " ".join(a.split())})
     return rows
 
 
@@ -107,7 +108,8 @@ def to_html(markdown):
                           capture_output=True, text=True, encoding="utf-8", check=True).stdout
 
 
-def payload(md, lang=None):
+def payload(md, lang=None, faq_acf=None):
+    """faq_acf = "field:question:answer" names the ACF repeater for the FAQ; None leaves the FAQ out."""
     meta, rest = front_matter(md)
     for key in ("h1", "slug"):
         if not meta.get(key):
@@ -118,7 +120,9 @@ def payload(md, lang=None):
         data["lang"] = lang
     seo = {"_yoast_wpseo_title": meta.get("title"), "_yoast_wpseo_metadesc": meta.get("meta-description")}
     data["meta"] = {k: v for k, v in seo.items() if v}
-    data["acf"] = {"faq": faq_rows(rest)}
+    if faq_acf:
+        field, question, answer = faq_acf.split(":")
+        data["acf"] = {field: faq_rows(rest, question, answer)}
     return data
 
 
@@ -161,11 +165,13 @@ def main():
     p.add_argument("--site", required=True)
     p.add_argument("--lang")
     p.add_argument("--category", help="comma-separated category slugs, looked up in --lang")
+    p.add_argument("--faq-acf", help="ACF repeater for the FAQ as field:question:answer, e.g. faq:faq_title:faq_content")
+    p.add_argument("--auth-env", default="WP_NEXUS_AUTH", help="environment variable that holds the auth")
     p.add_argument("--dry-run", action="store_true", help="print what would be sent; no network, no auth")
     a = p.parse_args()
 
     md = Path(a.latest_md).read_text(encoding="utf-8").replace("\r\n", "\n")
-    data = payload(md, a.lang)
+    data = payload(md, a.lang, a.faq_acf)
     project = Path(a.latest_md).parent
     image, alt = feature_image(project, md)
     if a.dry_run:
@@ -173,9 +179,9 @@ def main():
                           "feature image": str(image) if image else None, "alt text": alt},
                          ensure_ascii=False, indent=2))
         return
-    auth = os.environ.get("WP_NEXUS_AUTH")
+    auth = os.environ.get(a.auth_env)
     if not auth:
-        sys.exit("WP_NEXUS_AUTH is not set")
+        sys.exit(f"{a.auth_env} is not set")
     site = a.site.rstrip("/")
 
     statuses = "draft,pending,future,private,publish"
@@ -187,7 +193,7 @@ def main():
     ids = category_ids(site, auth, a.category, a.lang) if a.category else []
     if ids:
         data["categories"] = ids
-    seo, faq = data.pop("meta"), data.pop("acf")["faq"]
+    seo, acf = data.pop("meta"), data.pop("acf", None)
     post = api(site, "posts", auth, data)
     assert post["status"] == "draft", post["status"]
     print(f"draft {post['id']}")
@@ -198,9 +204,10 @@ def main():
         saved = api(site, f"posts/{post['id']}", auth, {"meta": seo}, warn=True) or {}
         if any(saved.get("meta", {}).get(k) != v for k, v in seo.items()):
             print("note: Yoast SEO title / meta description not saved; paste them in the editor")
+    field, faq = next(iter(acf.items())) if acf else (None, [])
     if faq:
-        saved = api(site, f"posts/{post['id']}", auth, {"acf": {"faq": faq}}, warn=True) or {}
-        if len((saved.get("acf") or {}).get("faq") or []) != len(faq):
+        saved = api(site, f"posts/{post['id']}", auth, {"acf": acf}, warn=True) or {}
+        if len((saved.get("acf") or {}).get(field) or []) != len(faq):
             print("note: FAQ metabox not saved; paste the Q/A in the editor")
     if not image:
         print(f"note: no feature image; save it as {project / 'feature-image.png'} and add it in the editor")

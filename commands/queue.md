@@ -15,8 +15,10 @@ Argument: $ARGUMENTS
 Read `nexus-output/queue.json`:
 
 ```json
-{"spreadsheet_id": "...", "tab": "Antrean", "drive_folder": "optional folder name", "wp_site": "https://example.com"}
+{"spreadsheet_id": "...", "tab": "Antrean", "drive_folder": "optional folder name", "wp_site": "https://example.com", "default_client": "optional client folder"}
 ```
+
+`default_client` (optional) is used for rows whose Client column is empty, so rows pasted from a keyword-research sheet run with that client's Defaults.
 
 Missing → ask for the sheet link once, then save the file. It stays in `nexus-output/` and never goes into the plugin repo. `drive_folder` is only used when set; find it with the Drive connector's search first. `wp_site` (optional) is the WordPress site that gets a draft of each `approved` article; it needs `WP_NEXUS_AUTH` (base64 of `username:application password`) set in the user's environment. Only rows whose Domain (or the client's Default domain) is on the same host as `wp_site` get a draft.
 
@@ -26,30 +28,35 @@ Read the header row and find columns **by header name**, not by position. Englis
 
 | Header (Indonesian / English) | Use |
 |---|---|
-| Client / Client | Folder name in `clients/`, for example `gwenchana`. Empty = no client context |
-| Keyword utama / Keyword | Target keyword. Required |
-| Market / Market | Country and language, for example `Indonesia, id`. Required |
+| Client / Client | Folder name in `clients/`, for example `gwenchana`. Empty = `default_client` from `queue.json`, else no client context |
+| Keywords (or Keyword utama) / Keyword | Target keyword. Required |
+| Market / Market | Country and language, for example `Indonesia, id`. Required unless Lang is `id`, which means `Indonesia, id` |
+| No, Month - Year | From the keyword-research sheet. Copied into the project notes only; they do not change the order or the timing of a run |
+| Volume | Search volume from the keyword-research sheet. /research puts it next to the Semrush and Ubersuggest numbers and notes a gap of more than 2x |
+| Judul Artikel | Working title. /outline starts the H1 from it and changes it only to fit 60 characters, the primary keyword, or what the live SERP shows; any change is listed in the review brief |
+| Lang | Article language code (`id`, `en`). Wins over the language in Market when both are filled and disagree; the notes say so |
+| Notes (keyword-research notes) | The research brief: SERP observations, gap, angle, commercial links, and restrictions. How each stage uses it is in section 4. Notes can only restrict claims, never add one; a "★ PRIORITAS" mark moves the row up (section 3) |
 | Domain situs / Domain | Brand site, for internal links and brand colors. Required unless the client's Defaults give one |
 | Voice / Voice | `brand` (default when empty) or `third-party` |
 | FAQ / FAQ | `body` (default when empty) or `metabox` |
 | Jumlah kata / Word count | Empty = the /outline recommendation from the SERP average |
 | Bahan first-hand / First-hand material | Cases, data, or experience the article may use. Empty = the angle is "Gap-based, no first-hand evidence" |
 | Link internal / Internal links | Optional URLs. When filled, skip link discovery and use only these |
-| Tujuan CTA, Label tombol / CTA destination, Button label | Required when Convert is not `tidak` and Profil is empty, unless the client's Defaults give them |
+| Tujuan CTA, Label tombol / CTA destination, Button label | Required when Convert is not `tidak` and Profil is empty, unless the Notes name a service page (destination only) or the client's Defaults give them |
 | Penawaran & klaim yang boleh / Offer and allowed claims | Offer details and approved claims for this article, on top of the client's `facts.md`. Anything written in neither is not claimed |
 | Convert / Convert | `ya` (default when empty) or `tidak` (no CTA blocks) |
 | Profil / Profile | Empty = `/convert`. `truemission` = `/convert-truemission` (its profile supplies the destination and palette) |
 | Context profile / Context profile | File name (or loose name) in `clients/<client>/context-profiles/`, for example `gwenchana-lawrence`. Empty = the client's default profile. A name that matches no file is an `error` |
 | Status | Drives the run |
-| Kode NXS, Slug, Link Doc outline, Link Doc artikel, Terakhir diproses, Catatan Claude | Written by Claude (English: NXS code, Slug, Outline Doc, Article Doc, Last run, Notes) |
+| Kode NXS, Slug, Link Doc outline, Link Doc artikel, Terakhir diproses, Catatan Claude | Written by Claude (English: NXS code, Slug, Outline Doc, Article Doc, Last run, Claude notes). Claude never writes to the Notes column; that one belongs to the keyword research |
 
 An empty column falls back to the client's Defaults in `clients/<client>/facts.md`, then to the stage's own default. A Client that matches no folder is an `error`.
 
 ## 3. Pick the work
 
-Statuses: `draft` (skip), `ready`, `running`, `outline-review`, `outline-revisi`, `outline-approved`, `review`, `revisi`, `approved`, `wp-draft`, `done`, `error`.
+Statuses: empty or `draft` (skip), `ready`, `running`, `outline-review`, `outline-revisi`, `outline-approved`, `review`, `revisi`, `approved`, `wp-draft`, `done`, `error`.
 
-Default: process **every waiting row** in one run: `approved`, `outline-revisi`, `revisi`, `outline-approved`, then `ready`, each only if its required inputs are filled. `/queue N` limits the run to N rows in that order, top to bottom. A row with a missing required input is set to `error` with the column named. Check the CTA inputs at `ready` too, so a missing destination fails now and not after the draft.
+Default: process **every waiting row** in one run: `approved`, `outline-revisi`, `revisi`, `outline-approved`, then `ready`, each only if its required inputs are filled. Within one status, rows whose Notes contain "PRIORITAS" go first, then the rest top to bottom. `/queue N` limits the run to N rows in that order. A row with a missing required input is set to `error` with the column named. Check the CTA inputs at `ready` too, so a missing destination fails now and not after the draft.
 
 Before a row starts, set its status to `running` and write the timestamp, so a second session or a scheduled run does not pick it up.
 
@@ -61,13 +68,13 @@ Collect each subagent's one-line report for section 6. A subagent that stops wit
 
 ## 4. Per status
 
-In queue mode the questions the stages normally ask are answered from the sheet row, then from each stage's own recommended default. Record every default you used in the notes. A stage that would need an answer the row cannot give sets the row to `error` and names the column.
+In this section "the notes" means the Catatan Claude column, never the keyword-research Notes column. In queue mode the questions the stages normally ask are answered from the sheet row, then from each stage's own recommended default. Record every default you used in the notes. A stage that would need an answer the row cannot give sets the row to `error` and names the column.
 
 **`ready` → `outline-review`** (gate 1)
 1. Project: reuse the Kode NXS if the row has one (continue from the first stage whose file is missing), else create the code and folder as in /research and write them to the row. Write the row's Client to `<project>/client.txt` and copy its context profile to `<project>/context-profile.json` as /research does, without asking.
-2. /research (done in the browser pass above, or here for a single row), /improve, /geo. A keyword that is too broad is an `error` asking for a narrower one. A CAPTCHA or blocked browser falls back to web search mode and the notes say the SERP came from search results, not the live page.
-3. /outline from the row: language and market from Market, word count, Voice, FAQ delivery, and the CTA count by the outline's own rule. Internal links: the row's links, else discovery from the sitemap or `site:` search, keeping at most 5 verified same-domain pages with anchors taken from the target page's own title or topic. Never an unverified URL.
-4. Export the outline for review: write `<project>/04b-outline-review.md` with a **review brief** on top (keyword and market; the search intent and content gap; the information gain angle; the internal links; the CTA count and reason; Voice, FAQ delivery, and word count; every default the queue chose; how to review), a horizontal rule, then the outline. Convert it with `pandoc "<file>" --from=markdown --to=html --wrap=none --output="<project>/outline-review.html"` (no Pandoc → stop with `https://pandoc.org/installing.html`), upload it through the Drive create-file tool as `text/html` titled `[CODE] outline - [H1]`, then delete the `.html`.
+2. /research (done in the browser pass above, or here for a single row), /improve, /geo. A keyword that is too broad is an `error` asking for a narrower one. A CAPTCHA or blocked browser falls back to web search mode and the notes say the SERP came from search results, not the live page. When the row has Notes, pass them to all three as the brief: /research compares the Notes' SERP observations with the live SERP and lists what changed; /improve and /geo start from the Notes' gap and angle and keep them only where the live data supports them. Volume goes into the /research keyword table.
+3. /outline from the row: language from Lang (else Market), market from Market (or `Indonesia` for `id`), word count, Voice, FAQ delivery, and the CTA count by the outline's own rule. H1 from Judul Artikel as described in section 2. Internal links: the row's links, else the pages named in Notes, then discovery from `links.md`, the sitemap, or `site:` search, keeping at most 5 verified same-domain pages with anchors taken from the target page's own title or topic. A page in Notes that cannot be verified (Notes may say "URL perlu dikonfirmasi") is dropped and listed in the review brief. Never an unverified URL. CTA destination: Tujuan CTA, else a service page named in the Notes' commercial part (verified, and not forbidden by the client's `facts.md`), else the client's Default. Restrictions in Notes (for example "JANGAN cantumkan angka tarif") apply like the row's allowed-claims column.
+4. Export the outline for review: write `<project>/04b-outline-review.md` with a **review brief** on top (keyword and market; what was taken from Judul Artikel and Notes, and what was changed or dropped and why; the search intent and content gap; the information gain angle; the internal links; the CTA count and reason; Voice, FAQ delivery, and word count; every default the queue chose; how to review), a horizontal rule, then the outline. Convert it with `pandoc "<file>" --from=markdown+hard_line_breaks --to=html --wrap=none --output="<project>/outline-review.html"` (hard line breaks keep each `— Basis:` / `— GEO structure:` line on its own line in the Doc) (no Pandoc → stop with `https://pandoc.org/installing.html`), upload it through the Drive create-file tool as `text/html` titled `[CODE] outline - [H1]`, then delete the `.html`.
 5. Write back: status `outline-review`, code, slug, outline Doc link, timestamp, notes.
 
 **`outline-revisi` → `outline-review`**

@@ -75,6 +75,12 @@ Runs the same conversion workflow with an isolated TrueMission/Prudential profil
 
 This profile is Claude Code-only and is never loaded by the general `/convert` command.
 
+### `/queue` — NEX-Q
+
+Runs the whole pipeline from a Google Sheet, one row per article, with two review gates and no questions in chat. `ready` rows get research, intent, GEO, and an outline, exported to a Google Doc (`outline-review`). After you comment and set `outline-approved`, the queue writes the draft, final draft, self-critique, CTA blocks, and the article Doc (`review`). Comment and set `revisi` for another pass, or set `done`.
+
+Up to 3 rows run in parallel, one subagent each; `/research` runs one row at a time because it drives the browser. Config lives in `nexus-output/queue.json` (`spreadsheet_id`, `tab`, optional `drive_folder`). Columns are found by header name: Keyword, Market, Domain are required; Voice, FAQ, Word count, First-hand material, Internal links, CTA destination, Button label, Offer and allowed claims, Convert, Profile are optional or conditional. Claude writes the NXS code, slug, both Doc links, last run, and notes. It never publishes, shares, or sends anything. Only Doc comments are read back, not edits typed into the Doc.
+
 ### `/export-gdoc` — NEX-GD
 
 Exports the latest final or converted article to a Google Doc through the Google Drive connector, containing:

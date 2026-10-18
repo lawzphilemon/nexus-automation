@@ -5,8 +5,8 @@ General-purpose Claude Code plugin for SEO/GEO article research, drafting, conve
 ## Install
 
 ```text
-/plugin marketplace add lawzphilemon/nexus-plugin
-/plugin install nexus@nexus-plugin
+/plugin marketplace add lawzphilemon/nexus-automation
+/plugin install nexus-automation@nexus-automation
 ```
 
 ## Claude Code pipeline

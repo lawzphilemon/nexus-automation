@@ -11,7 +11,10 @@ does not have is printed as a note and the draft keeps the default category.
 After the draft exists, the YAML title and meta-description go to the Yoast SEO title and meta description in a
 second request; if WordPress refuses that, the draft stays and a note says to paste them by hand.
 The "# FAQ metabox" Q/A pairs go to the ACF repeater `faq` (faq_title, faq_content) in a third request, with the
-same rule. The JSON-LD is not sent: it stays in the article Doc for a manual paste.
+same rule. A feature-image.{png,jpg,jpeg,webp} next to latest.md is uploaded to the media library, gets the
+`**Alt text:**` line of feature-image-prompt.md (else the YAML image-alt-text-template without brackets) and the
+post's language, and becomes the featured image; same rule again. The JSON-LD is not sent: it stays in the article
+Doc for a manual paste.
 A post that already has this slug (any status) stops the run, so a re-run never creates a duplicate.
 Auth: WP_NEXUS_AUTH = base64 of "username:application password" (WordPress Users > Profile > Application Passwords).
 Needs Pandoc in PATH. Prints the draft's edit and preview links.
@@ -64,6 +67,38 @@ def faq_rows(rest):
     return rows
 
 
+IMAGE_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
+
+
+def feature_image(project, md):
+    """(image path or None, alt text) for <project>/feature-image.*. Alt = the `**Alt text:**` line of
+    feature-image-prompt.md, else the YAML image-alt-text-template with its brackets removed."""
+    image = next((project / f"feature-image{ext}" for ext in IMAGE_TYPES
+                  if (project / f"feature-image{ext}").is_file()), None)
+    prompt = project / "feature-image-prompt.md"
+    m = re.search(r"^[-*\s]*\**Alt text:\**\s*(\S.*)$",
+                  prompt.read_text(encoding="utf-8") if prompt.is_file() else "", flags=re.M | re.I)
+    alt = m[1].strip() if m else re.sub(r"[\[\]]", "", front_matter(md)[0].get("image-alt-text-template", ""))
+    return image, alt
+
+
+def set_feature_image(site, auth, post, image, alt):
+    """Upload the image, set its alt text (and the post's Polylang language), make it the featured image.
+    Returns False at the first step WordPress refuses."""
+    ext = image.suffix.lower()
+    name = urllib.parse.quote(post.get("slug") or f"post-{post['id']}") + ext
+    media = api(site, "media", auth, image.read_bytes(), warn=True,
+                headers={"Content-Type": IMAGE_TYPES[ext], "Content-Disposition": f'attachment; filename="{name}"'})
+    if not (media or {}).get("id"):
+        return False
+    # WordPress ignores `lang` on media when Polylang does not translate media, so it can ride along.
+    fields = {k: v for k, v in {"alt_text": alt, "lang": post.get("lang")}.items() if v}
+    if fields and (api(site, f"media/{media['id']}", auth, fields, warn=True) or {}).get("alt_text") != alt:
+        return False
+    saved = api(site, f"posts/{post['id']}", auth, {"featured_media": media["id"]}, warn=True) or {}
+    return saved.get("featured_media") == media["id"]
+
+
 def to_html(markdown):
     pandoc = shutil.which("pandoc")
     if not pandoc:
@@ -87,19 +122,23 @@ def payload(md, lang=None):
     return data
 
 
-def api(site, path, auth, data=None, warn=False):
-    req = urllib.request.Request(f"{site.rstrip('/')}/wp-json/wp/v2/{path}",
-                                 data=json.dumps(data).encode() if data is not None else None,
-                                 headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json"})
+def api(site, path, auth, data=None, warn=False, headers=None):
+    """JSON request; bytes `data` (a media upload) is sent as is, with `headers` overriding the defaults."""
+    body = data if isinstance(data, bytes) else json.dumps(data).encode() if data is not None else None
+    req = urllib.request.Request(f"{site.rstrip('/')}/wp-json/wp/v2/{path}", data=body,
+                                 headers={"Authorization": f"Basic {auth}", "Content-Type": "application/json",
+                                          **(headers or {})})
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.urlopen(req, timeout=120) as r:
             return json.load(r)
     except urllib.error.HTTPError as e:
         msg = f"WordPress said {e.code}: {e.read().decode(errors='replace')[:300]}"
-        if warn:
-            print(f"warning: {msg}")
-            return None
-        sys.exit(msg)
+    except OSError as e:  # network error or timeout
+        msg = f"request failed: {e}"
+    if warn:
+        print(f"warning: {msg}")
+        return None
+    sys.exit(msg)
 
 
 def category_ids(site, auth, slugs, lang):
@@ -125,9 +164,13 @@ def main():
     p.add_argument("--dry-run", action="store_true", help="print what would be sent; no network, no auth")
     a = p.parse_args()
 
-    data = payload(Path(a.latest_md).read_text(encoding="utf-8").replace("\r\n", "\n"), a.lang)
+    md = Path(a.latest_md).read_text(encoding="utf-8").replace("\r\n", "\n")
+    data = payload(md, a.lang)
+    project = Path(a.latest_md).parent
+    image, alt = feature_image(project, md)
     if a.dry_run:
-        print(json.dumps({**data, "content": data["content"][:400] + "...", "category slugs": a.category},
+        print(json.dumps({**data, "content": data["content"][:400] + "...", "category slugs": a.category,
+                          "feature image": str(image) if image else None, "alt text": alt},
                          ensure_ascii=False, indent=2))
         return
     auth = os.environ.get("WP_NEXUS_AUTH")
@@ -159,6 +202,12 @@ def main():
         saved = api(site, f"posts/{post['id']}", auth, {"acf": {"faq": faq}}, warn=True) or {}
         if len((saved.get("acf") or {}).get("faq") or []) != len(faq):
             print("note: FAQ metabox not saved; paste the Q/A in the editor")
+    if not image:
+        print(f"note: no feature image; save it as {project / 'feature-image.png'} and add it in the editor")
+    elif set_feature_image(site, auth, post, image, alt):
+        print(f"feature image set: {image.name}")
+    else:
+        print(f"note: feature image not set; add {image} in the editor (alt text: {alt})")
     print(f"edit: {site}/wp-admin/post.php?post={post['id']}&action=edit")
     print(f"preview: {site}/?p={post['id']}&preview=true")
 

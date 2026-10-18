@@ -107,7 +107,8 @@ Write valid YAML and escape values when needed. The article must contain no dupl
    - Follow the context profile's `visual_identity` when present (palette as hex codes, illustration or photography style, its imagery rules). Otherwise use a clean editorial style.
    - Composition: a clear focal subject, with calm space where the theme may overlay the title.
    - Negative prompt: no text or lettering, no logos or brand marks, no real people's faces, no UI that imitates a real product unless the article is about it.
-   - Alt text: one line from the image alt text template.
+   - Alt text: one line from the image alt text template, written as `**Alt text:** <text>` (wp-draft.py reads that line).
+   - Tell the user to save the image they generate as `<project>/feature-image.png` (`.jpg`, `.jpeg`, or `.webp` also work): the queue's WordPress draft step uploads it as the featured image with this alt text.
 
 8. Offer the next action:
 

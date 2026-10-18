@@ -1,6 +1,7 @@
 import importlib.util
 import pathlib
 import shutil
+import tempfile
 
 path = pathlib.Path(__file__).resolve().parent.parent / 'scripts' / 'wp-draft.py'
 spec = importlib.util.spec_from_file_location('wp_draft', path)
@@ -78,6 +79,36 @@ def fake_api(site, path, auth, data=None, warn=False):
 wp_draft.api = fake_api
 assert wp_draft.category_ids('https://x', 'a', 'digital-marketing, seo,', 'id') == [110]
 assert calls == ['categories?slug=digital-marketing&_fields=id&lang=id', 'categories?slug=seo&_fields=id&lang=id']
+
+with tempfile.TemporaryDirectory() as tmp:
+    project = pathlib.Path(tmp)
+    yaml_alt = '---\nh1: "X"\nimage-alt-text-template: "CTR adalah [apa] - [konteks]"\n---\n'
+    assert wp_draft.feature_image(project, yaml_alt) == (None, 'CTR adalah apa - konteks')
+    (project / 'feature-image-prompt.md').write_text('# Prompt\n\n**Alt text:** Ilustrasi tayangan jadi klik\n',
+                                                     encoding='utf-8')
+    (project / 'feature-image.webp').write_bytes(b'RIFF\x00\x00\x00\x00WEBP')
+    image, alt = wp_draft.feature_image(project, yaml_alt)
+    assert image == project / 'feature-image.webp' and alt == 'Ilustrasi tayangan jadi klik'
+    (project / 'feature-image-prompt.md').write_text('- Alt text: Older list form\n', encoding='utf-8')
+    assert wp_draft.feature_image(project, yaml_alt)[1] == 'Older list form'
+
+    calls = []
+    def fake_api(site, path, auth, data=None, warn=False, headers=None):
+        calls.append((path, data, headers))
+        if path == 'media':
+            return {'id': 55}
+        return {'alt_text': data['alt_text']} if path.startswith('media/') else {'featured_media': data['featured_media']}
+    wp_draft.api = fake_api
+    post = {'id': 9, 'slug': 'ctr-adalah', 'lang': 'id'}
+    assert wp_draft.set_feature_image('https://x', 'a', post, image, 'Alt')
+    assert calls[0] == ('media', b'RIFF\x00\x00\x00\x00WEBP',
+                        {'Content-Type': 'image/webp', 'Content-Disposition': 'attachment; filename="ctr-adalah.webp"'})
+    assert calls[1][:2] == ('media/55', {'alt_text': 'Alt', 'lang': 'id'})
+    assert calls[2][:2] == ('posts/9', {'featured_media': 55})
+
+    calls.clear()
+    wp_draft.api = lambda *args, **kw: calls.append(args[1]) or None  # upload refused
+    assert not wp_draft.set_feature_image('https://x', 'a', post, image, 'Alt') and calls == ['media']
 
 if shutil.which('pandoc'):
     data = wp_draft.payload(md, 'id')

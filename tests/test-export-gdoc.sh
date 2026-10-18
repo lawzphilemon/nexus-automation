@@ -27,6 +27,12 @@ Paragraf pembuka dengan **teks tebal** dan [tautan](https://example.com).
 <div class="cta">CTA tetap menjadi plaintext HTML.</div>
 ```
 
+# FAQ metabox (paste per field)
+
+1. **Apa itu contoh?**
+
+   Jawaban contoh di paragraf sendiri.
+
 # Schema Markup (JSON-LD)
 
 ```json
@@ -39,7 +45,7 @@ pandoc "$work_dir/article.md" --from=markdown+yaml_metadata_block+raw_html --to=
 
 html="$(cat "$work_dir/article.html")"
 for expected in "Judul" "Panduan Contoh" "/panduan-contoh" "Meta description untuk"   "Main Keyword" "panduan contoh" "Related Keywords" "contoh artikel, uji export"   "Ganti &lt;placeholder&gt; &amp; cek sumber" '<h1 id="panduan-contoh">' \
-  'href="https://example.com"' '&lt;div class=&quot;cta&quot;&gt;' "Schema Markup (JSON-LD)"; do
+  'href="https://example.com"' '<li><p><strong>Apa itu contoh?</strong></p>' '<p>Jawaban contoh di paragraf sendiri.</p></li>' '&lt;div class=&quot;cta&quot;&gt;' "Schema Markup (JSON-LD)"; do
   grep -Fq "$expected" <<<"$html" || { echo "missing: $expected" >&2; exit 1; }
 done
 

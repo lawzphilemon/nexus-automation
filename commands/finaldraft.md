@@ -19,7 +19,7 @@ allowed-tools: Read, Write
 **GEO compliance**
 - [ ] Direct Answer Block present, self-contained, 40-60 words?
 - [ ] All FAQ Q&As self-contained?
-- [ ] Metabox mode only: no FAQ section in the body, metabox answers are plain text and 40–60 words, and the metabox block matches the questions from the outline?
+- [ ] Metabox mode only: no FAQ section in the body, metabox answers are plain text and 40–60 words, each question is bold on its own line with its answer as a separate indented paragraph below it, and the metabox block matches the questions from the outline?
 - [ ] Definition Boxes use "[Term] is..." format?
 - [ ] Every H2 opens with a self-contained answer sentence?
 - [ ] Stat Blocks cite source + year inline, and every stat was verified in NEX-G?
@@ -79,7 +79,15 @@ notes:
 
 # FAQ metabox (paste per field)
 
-[Metabox mode only: numbered plain-text Q/A pairs. Omit this heading in body mode.]
+[Metabox mode only. Omit this heading in body mode. One numbered item per pair:]
+
+1. **[Question 1]**
+
+   [Answer 1: plain text, 40–60 words]
+
+2. **[Question 2]**
+
+   [Answer 2]
 
 # Schema Markup (JSON-LD)
 

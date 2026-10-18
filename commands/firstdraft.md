@@ -25,7 +25,7 @@ allowed-tools: Read, Write
 - FAQ: each Q&A self-contained — answer makes sense without re-reading the question
 - FAQ delivery (from the `FAQ delivery:` line in the first 3 lines of the outline, which is line 2 once confirmed; `body` if absent):
   - `body`: write the FAQ as an H2 section in the article.
-  - `metabox`: the body has no FAQ section. After the article, add a separate `# FAQ metabox (paste per field)` block with numbered Q/A pairs. Answers are plain text only (no links, bold, or lists), 40–60 words, and the first sentence answers the question directly
+  - `metabox`: the body has no FAQ section. After the article, add a separate `# FAQ metabox (paste per field)` block. Write each pair as a numbered item with the question in bold on its own line, a blank line, and the answer indented three spaces as its own paragraph (format in /finaldraft step 6), so the Doc shows the question and the answer on separate lines. The bold is only for review; the publisher pastes the question text and the answer into their own fields as plain text. Answers are plain text only (no links, bold, or lists), 40–60 words, and the first sentence answers the question directly
 - Section answer sentences: every H2 opens with one sentence that answers the section and makes sense if extracted alone
 - External sources: link each source from the outline where its claim appears, as a markdown link with descriptive anchor text (the source or page name), never a bare URL. Use only the recorded quote, if any
 - Stat Blocks: cite inline — "According to [Source], [year], [stat]" — using only stats verified in NEX-G. Leave out any stat marked "Needs source"; never fill it from memory

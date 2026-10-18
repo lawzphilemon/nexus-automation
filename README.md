@@ -94,10 +94,12 @@ Exports the latest final or converted article to a Google Doc through the Google
 - A metadata table for article title, slug, meta description, main keyword, related keywords, and publisher notes (when any).
 - Real headings for the article hierarchy.
 - Preserved lists, links, article tables, and CTA HTML as paste-ready code.
-- The FAQ metabox block, when that mode is used.
+- The FAQ metabox block, when that mode is used: each question in bold on its own line with the answer as its own paragraph below, ready to paste per field.
 - JSON-LD schema at the end.
 
-It uses Pandoc with the bundled Lua filter; install Pandoc from [pandoc.org/installing.html](https://pandoc.org/installing.html). The Doc stays private until you share it. Without a Google Drive connector, the command keeps the generated HTML file so you can upload it to Drive and open it with Google Docs.
+It uses Pandoc with the bundled Lua filter; install Pandoc from [pandoc.org/installing.html](https://pandoc.org/installing.html).
+
+**Read-back check.** The Drive connector cannot read local files, so the HTML is copied into the upload by hand. After the upload, the Doc is read back with the connector's `read_file_content`, and `scripts/gdoc-check.py` (Python stdlib) compares it with the generated HTML: H2 and H3 headings, links, code blocks, and word count within 2%. A mismatch uploads once more (the first Doc goes to the Drive trash); a second mismatch keeps the Doc and reports the differences as a note instead of letting them pass silently. `/queue` runs the same check on the outline Doc. The Doc stays private until you share it. Without a Google Drive connector, the command keeps the generated HTML file so you can upload it to Drive and open it with Google Docs.
 
 ### `/humanize` — NEX-H
 

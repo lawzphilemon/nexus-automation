@@ -93,6 +93,23 @@ with tempfile.TemporaryDirectory() as tmp:
     (project / 'feature-image-prompt.md').write_text('- Alt text: Older list form\n', encoding='utf-8')
     assert wp_draft.feature_image(project, yaml_alt)[1] == 'Older list form'
 
+    # Drive for desktop folder: the newest file with the article's prefix, only when the project has no image.
+    import os
+    drive = project / 'drive-image'
+    drive.mkdir()
+    (drive / 'ACM-IMG-NXS-261018-K7RW.jpg').write_bytes(b'old')
+    os.utime(drive / 'ACM-IMG-NXS-261018-K7RW.jpg', (1, 1))
+    (drive / 'acm-img-nxs-261018-k7rw-v2.PNG').write_bytes(b'new')
+    (drive / 'ACM-IMG-NXS-261018-ZZZZ.png').write_bytes(b'other article')
+    (drive / 'ACM-IMG-NXS-261018-K7RW.txt').write_bytes(b'not an image')
+    assert wp_draft.feature_image(project, yaml_alt, drive, 'ACM-IMG-NXS-261018-K7RW')[0] == project / 'feature-image.webp'
+    (project / 'feature-image.webp').unlink()
+    assert wp_draft.feature_image(project, yaml_alt, drive, 'ACM-IMG-NXS-261018-K7RW')[0].name == 'acm-img-nxs-261018-k7rw-v2.PNG'
+    assert wp_draft.feature_image(project, yaml_alt, drive, 'ACM-IMG-NXS-261018-NONE')[0] is None
+    assert wp_draft.feature_image(project, yaml_alt, project / 'missing', 'ACM-IMG-NXS-261018-K7RW')[0] is None
+    (project / 'feature-image.webp').write_bytes(b'RIFF\x00\x00\x00\x00WEBP')
+    image = project / 'feature-image.webp'
+
     calls = []
     def fake_api(site, path, auth, data=None, warn=False, headers=None):
         calls.append((path, data, headers))

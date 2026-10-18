@@ -73,7 +73,7 @@ Never create, edit, or delete posts or media during setup.
 
 ## 5. Drive folders (with the Google Drive connector)
 
-Create the client's main folder (named after the brand, for example `Acme`) with two subfolders, `Outline` and `Article`, inside `drive_folder` from `nexus-output/queue.json` when set, else My Drive. Search by exact name first and reuse a folder that already exists in that place; never create a duplicate. Write the three IDs to `facts.md` as `Folder Drive`, `Folder Drive outline`, and `Folder Drive article`. Doc names and filing then follow /export-gdoc **Doc names and folders**.
+Create the client's main folder (named after the brand, for example `Acme`) with three subfolders, `Outline`, `Article`, and `Image`, inside `drive_folder` from `nexus-output/queue.json` when set, else My Drive. Search by exact name first and reuse a folder that already exists in that place; never create a duplicate. Write the four IDs to `facts.md` as `Folder Drive`, `Folder Drive outline`, `Folder Drive article`, and `Folder Drive image`. Then look for Google Drive for desktop (Windows: a `My Drive` or `Drive Saya` folder on a drive letter such as `G:`; macOS: `~/Library/CloudStorage/GoogleDrive-*/My Drive`): when the client's Image folder exists there, write its full path as `Folder Drive image lokal`. Without Drive for desktop, say that it is what lets the queue attach feature images the team uploads to Drive (https://www.google.com/drive/download/), and that saving the image as `<project>/feature-image.png` works meanwhile. Doc names and filing then follow /export-gdoc **Doc names and folders**.
 
 ## 6. Queue sheet (optional)
 

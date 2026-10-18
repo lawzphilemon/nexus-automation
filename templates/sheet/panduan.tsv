@@ -39,5 +39,5 @@ Catatan
 Copy-paste dari sheet KW research: tempel 7 kolom (No sampai Notes) mulai dari kolom A, lalu set Status ke ready untuk baris yang mau diproses.		
 Review lewat komentar di Doc. Teks yang Anda ketik langsung di Doc tidak dibaca ulang oleh Claude.		
 Kolom dicari dari nama header, jadi urutan kolom boleh diubah. Nama header jangan diubah.		
-Feature image: simpan gambar sebagai feature-image.png (atau .jpg/.webp) di folder proyek artikel sebelum set approved, maka gambarnya otomatis dipasang.		
+Feature image: prompt-nya ada di Doc artikel (bagian Feature image). Simpan gambar di folder Drive brand/Image dengan nama INISIAL-IMG-KODE.png sebelum set approved, maka gambarnya otomatis dipasang di WordPress (perlu Google Drive for desktop).		
 Jalankan /nexus-automation:queue nama-klien (atau tanpa nama untuk semua brand) dari folder kerja yang berisi nexus-output/ dan clients/.		

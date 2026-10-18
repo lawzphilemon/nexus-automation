@@ -18,11 +18,13 @@ Use `<project>/latest.md` by default, or the `.md` path given as an argument. It
 ## Workflow
 
 1. Confirm Pandoc is available with `command -v pandoc`. If absent, stop with the official install link: `https://pandoc.org/installing.html`.
-2. Build the HTML with the bundled filter, so the Doc starts with the metadata table: `Judul Artikel`, `Slug`, `Meta Description`, `Main Keyword`, `Related Keywords`, and `Notes` (rows without a value are skipped):
+2. Build the HTML with the bundled filter, so the Doc starts with the metadata table: `Judul Artikel`, `Slug`, `Meta Description`, `Main Keyword`, `Related Keywords`, and `Notes` (rows without a value are skipped). When `<project>/feature-image-prompt.md` exists, pass it as the **first** input: the Doc then shows the metadata table, the **Feature image** block (size, where to save the image, prompt, negative prompt, alt text), and then the article, so the reviewer sees and can comment on the image prompt with the article:
 
 ```bash
-pandoc "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wrap=none --no-highlight --lua-filter="${CLAUDE_PLUGIN_ROOT}/scripts/nexus-gdoc.lua" --output="<project>/<slug>.gdoc.html"
+pandoc "<project>/feature-image-prompt.md" "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wrap=none --no-highlight --lua-filter="${CLAUDE_PLUGIN_ROOT}/scripts/nexus-gdoc.lua" --output="<project>/<slug>.gdoc.html"
 ```
+
+Without that file, run the same command with `"<source.md>"` as the only input.
 
    CTA HTML and the JSON-LD stay in plain (unhighlighted) code blocks, so they arrive as paste-ready code with no stray links or styling.
 
@@ -59,7 +61,7 @@ Every Doc the pipeline creates (this command and the queue's outline export) fol
 - `<CODE>`: the project code.
 - `-v<N>`: the version. Every Doc created is logged in `<project>/drive-docs.md` (`| Type | Version | Title | Link | Date |`). The first Doc of a type has no suffix; the next one of the same type is `-v2`, then `-v3`.
 
-**Folder:** the client's main folder, named after the client's brand (for example `Acme`), holds two subfolders, `Outline` and `Article`. Outline Docs go into `Outline`, article Docs into `Article`. Their IDs are the `Folder Drive`, `Folder Drive outline`, and `Folder Drive article` Defaults in `facts.md`. For a missing ID: search Drive for the folder by exact name inside its parent (the main folder's parent is the `drive_folder` from `nexus-output/queue.json` when set, else My Drive), create it only when the search finds none, and write the ID back to `facts.md`. Never create a second folder with the same name in the same place.
+**Folder:** the client's main folder, named after the client's brand (for example `Acme`), holds three subfolders, `Outline`, `Article`, and `Image`. Outline Docs go into `Outline`, article Docs into `Article`, and the team saves each generated feature image into `Image` as `<INITIALS>-IMG-<CODE>.png` (or `.jpg`/`.webp`; a `-v2` suffix for a newer one is fine). Their IDs are the `Folder Drive`, `Folder Drive outline`, `Folder Drive article`, and `Folder Drive image` Defaults in `facts.md`; `Folder Drive image lokal` is the same Image folder as a local path when Google Drive for desktop syncs it. For a missing ID: search Drive for the folder by exact name inside its parent (the main folder's parent is the `drive_folder` from `nexus-output/queue.json` when set, else My Drive), create it only when the search finds none, and write the ID back to `facts.md`. Never create a second folder with the same name in the same place.
 
 **No client** (`<project>/client.txt` missing or `none`): the Doc's title is the H1 (outline: `<CODE> outline - <H1>`), and it goes into `drive_folder` when set, else My Drive.
 

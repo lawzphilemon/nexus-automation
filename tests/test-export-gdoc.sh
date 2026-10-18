@@ -57,4 +57,18 @@ if sed '/^notes:/,/^---$/{/^notes:/d;/^  - /d}' "$work_dir/article.md" | pandoc 
   echo "Notes row must be skipped when there are no notes" >&2
   exit 1
 fi
+# The feature image block goes in as the first input: metadata table, then the block, then the article.
+cat >"$work_dir/feature-image-prompt.md" <<'MARKDOWN'
+# Feature image
+
+- **Ukuran:** 1920×1080 (16:9)
+- **Prompt:** Ilustrasi contoh
+- **Alt text:** Contoh alt text
+MARKDOWN
+pandoc "$work_dir/feature-image-prompt.md" "$work_dir/article.md" --from=markdown+yaml_metadata_block+raw_html --to=html   --wrap=none --no-highlight --lua-filter="$repo_root/scripts/nexus-gdoc.lua" --output="$work_dir/with-image.html"
+order="$(grep -o -e '<table' -e 'id="feature-image"' -e 'id="panduan-contoh"' "$work_dir/with-image.html" | head -3 | tr '
+' ' ')"
+[ "$order" = '<table id="feature-image" id="panduan-contoh" ' ] || { echo "feature image block out of place: $order" >&2; exit 1; }
+grep -Fq "<strong>Alt text:</strong> Contoh alt text" "$work_dir/with-image.html" || { echo "alt text line missing" >&2; exit 1; }
+
 echo "Google Docs export test passed"

@@ -28,9 +28,11 @@ Dipakai untuk input yang tidak diberikan user atau baris sheet.
 - Folder Drive: {{DRIVE_FOLDER}}
 - Folder Drive outline: {{DRIVE_FOLDER_OUTLINE}}
 - Folder Drive article: {{DRIVE_FOLDER_ARTICLE}}
+- Folder Drive image: {{DRIVE_FOLDER_IMAGE}}
+- Folder Drive image lokal: {{DRIVE_FOLDER_IMAGE_LOCAL}}
 - Queue sheet: {{QUEUE_SHEET}}
 
-<!-- ID folder Google Drive. Folder utama bernama brand klien, berisi subfolder Outline dan Article. Nama Doc: INISIAL-OL-KODE (outline) dan INISIAL-AR-KODE (artikel), -v2 dan seterusnya untuk revisi. Queue sheet: ID Google Sheet antrean brand ini (INISIAL-QUEUE Brand), di folder utama. -->
+<!-- ID folder Google Drive. Folder utama bernama brand klien, berisi subfolder Outline, Article, dan Image. Gambar feature disimpan tim di Image dengan nama INISIAL-IMG-KODE.png. "Folder Drive image lokal" = path folder Image yang disinkronkan Google Drive for desktop, misalnya G:\My Drive\Acme\Image; dipakai queue untuk memasang gambar ke WordPress. Nama Doc: INISIAL-OL-KODE (outline) dan INISIAL-AR-KODE (artikel), -v2 dan seterusnya untuk revisi. Queue sheet: ID Google Sheet antrean brand ini (INISIAL-QUEUE Brand), di folder utama. -->
 
 ### WordPress (opsional, untuk status `approved` di queue)
 

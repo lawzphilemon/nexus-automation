@@ -1,3 +1,4 @@
 nexus-output/
 clients/
 __pycache__/
+.claude/settings.local.json

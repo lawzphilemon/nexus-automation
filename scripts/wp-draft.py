@@ -12,7 +12,7 @@ does not have is printed as a note and the draft keeps the default category.
 After the draft exists, the YAML title and meta-description go to the Yoast SEO title and meta description in a
 second request; if WordPress refuses that, the draft stays and a note says to paste them by hand.
 With --faq-acf (for example `faq:faq_title:faq_content`), the "# FAQ metabox" Q/A pairs go to that ACF repeater
-and its two sub-fields in a third request, with the same rule; without it the FAQ is not sent. A feature-image.{png,jpg,jpeg,webp} next to latest.md is uploaded to the media library, gets the
+and its two sub-fields in a third request, with the same rule; without it the FAQ is not sent. A feature-image.{png,jpg,jpeg,webp} next to latest.md (else the newest --image-prefix file in --image-dir) is uploaded to the media library, gets the
 `**Alt text:**` line of feature-image-prompt.md (else the YAML image-alt-text-template without brackets) and the
 post's language, and becomes the featured image; same rule again. The JSON-LD is not sent: it stays in the article
 Doc for a manual paste.
@@ -71,11 +71,16 @@ def faq_rows(rest, question="faq_title", answer="faq_content"):
 IMAGE_TYPES = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
 
 
-def feature_image(project, md):
-    """(image path or None, alt text) for <project>/feature-image.*. Alt = the `**Alt text:**` line of
-    feature-image-prompt.md, else the YAML image-alt-text-template with its brackets removed."""
+def feature_image(project, md, image_dir=None, prefix=None):
+    """(image path or None, alt text). The image is <project>/feature-image.*, else the newest file in image_dir
+    (a Drive folder synced by Google Drive for desktop) whose name starts with prefix, e.g. ACM-IMG-NXS-261018-K7RW.
+    Alt = the `**Alt text:**` line of feature-image-prompt.md, else the YAML image-alt-text-template without brackets."""
     image = next((project / f"feature-image{ext}" for ext in IMAGE_TYPES
                   if (project / f"feature-image{ext}").is_file()), None)
+    if image is None and image_dir and prefix and Path(image_dir).is_dir():
+        found = [p for p in Path(image_dir).iterdir() if p.is_file() and p.suffix.lower() in IMAGE_TYPES
+                 and p.name.lower().startswith(prefix.lower())]
+        image = max(found, key=lambda p: p.stat().st_mtime, default=None)
     prompt = project / "feature-image-prompt.md"
     m = re.search(r"^[-*\s]*\**Alt text:\**\s*(\S.*)$",
                   prompt.read_text(encoding="utf-8") if prompt.is_file() else "", flags=re.M | re.I)
@@ -166,6 +171,8 @@ def main():
     p.add_argument("--lang")
     p.add_argument("--category", help="comma-separated category slugs, looked up in --lang")
     p.add_argument("--faq-acf", help="ACF repeater for the FAQ as field:question:answer, e.g. faq:faq_title:faq_content")
+    p.add_argument("--image-dir", help="local folder of synced Drive images (Google Drive for desktop)")
+    p.add_argument("--image-prefix", help="file name prefix of this article's image, e.g. ACM-IMG-NXS-261018-K7RW")
     p.add_argument("--auth-env", default="WP_NEXUS_AUTH", help="environment variable that holds the auth")
     p.add_argument("--dry-run", action="store_true", help="print what would be sent; no network, no auth")
     a = p.parse_args()
@@ -173,7 +180,7 @@ def main():
     md = Path(a.latest_md).read_text(encoding="utf-8").replace("\r\n", "\n")
     data = payload(md, a.lang, a.faq_acf)
     project = Path(a.latest_md).parent
-    image, alt = feature_image(project, md)
+    image, alt = feature_image(project, md, a.image_dir, a.image_prefix)
     if a.dry_run:
         print(json.dumps({**data, "content": data["content"][:400] + "...", "category slugs": a.category,
                           "feature image": str(image) if image else None, "alt text": alt},
@@ -210,7 +217,8 @@ def main():
         if len((saved.get("acf") or {}).get(field) or []) != len(faq):
             print("note: FAQ metabox not saved; paste the Q/A in the editor")
     if not image:
-        print(f"note: no feature image; save it as {project / 'feature-image.png'} and add it in the editor")
+        where = f"{a.image_prefix}.png in {a.image_dir}" if a.image_dir and a.image_prefix else project / "feature-image.png"
+        print(f"note: no feature image; save it as {where} and add it in the editor")
     elif set_feature_image(site, auth, post, image, alt):
         print(f"feature image set: {image.name}")
     else:

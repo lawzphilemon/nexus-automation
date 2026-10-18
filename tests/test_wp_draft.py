@@ -30,7 +30,12 @@ Intro paragraph.
 
 # FAQ metabox (paste per field)
 
-1. Q?
+1. Q one?
+Answer one,
+second line.
+
+2. Q two?
+Answer two.
 
 # Schema Markup (JSON-LD)
 
@@ -50,6 +55,22 @@ assert '```{=html}\n<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>\n<!--
 assert 'FAQ metabox' not in body and 'Schema' not in body and '# CTR' not in body
 assert 'Paste this block' not in body
 
+assert wp_draft.faq_rows(rest) == [{'faq_title': 'Q one?', 'faq_content': 'Answer one, second line.'},
+                                   {'faq_title': 'Q two?', 'faq_content': 'Answer two.'}]
+new_layout = '''# FAQ metabox (paste per field)
+
+1. **Q one?**
+
+   Answer one.
+
+2. **Q two?**
+
+   Answer two.
+'''
+assert wp_draft.faq_rows(new_layout) == [{'faq_title': 'Q one?', 'faq_content': 'Answer one.'},
+                                         {'faq_title': 'Q two?', 'faq_content': 'Answer two.'}]
+assert wp_draft.faq_rows('# H1\n\nNo FAQ.\n') == []
+
 calls = []
 def fake_api(site, path, auth, data=None, warn=False):
     calls.append(path)
@@ -63,6 +84,7 @@ if shutil.which('pandoc'):
     assert data['slug'] == 'ctr-adalah' and data['status'] == 'draft' and data['lang'] == 'id'
     assert '<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>' in data['content']
     assert '<h2 id="closing">Closing</h2>' in data['content']
+    assert len(data['acf']['faq']) == 2
     assert data['meta'] == {'_yoast_wpseo_title': 'CTR Adalah: Rumus',
                             '_yoast_wpseo_metadesc': 'CTR adalah persentase tayangan yang diklik.'}
 print('wp-draft test passed')

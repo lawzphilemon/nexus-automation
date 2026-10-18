@@ -10,7 +10,8 @@ Title = the YAML h1, slug = the last segment of the YAML slug, content = the art
 does not have is printed as a note and the draft keeps the default category.
 After the draft exists, the YAML title and meta-description go to the Yoast SEO title and meta description in a
 second request; if WordPress refuses that, the draft stays and a note says to paste them by hand.
-The FAQ metabox and the JSON-LD are not sent: they stay in the article Doc for a manual paste.
+The "# FAQ metabox" Q/A pairs go to the ACF repeater `faq` (faq_title, faq_content) in a third request, with the
+same rule. The JSON-LD is not sent: it stays in the article Doc for a manual paste.
 A post that already has this slug (any status) stops the run, so a re-run never creates a duplicate.
 Auth: WP_NEXUS_AUTH = base64 of "username:application password" (WordPress Users > Profile > Application Passwords).
 Needs Pandoc in PATH. Prints the draft's edit and preview links.
@@ -51,6 +52,18 @@ def article_body(rest):
                   body, flags=re.M | re.S).strip()
 
 
+def faq_rows(rest):
+    """Q/A pairs of the "# FAQ metabox" block. Accepts `1. **Q?**` + an indented answer paragraph (2.11.0+) and the
+    older `1. Q?` with the answer on the next line."""
+    m = re.search(r"^# FAQ metabox[^\n]*\n(.*?)(?=^# |\Z)", rest, flags=re.M | re.S)
+    rows = []
+    for item in re.split(r"^\d+\.[ \t]+", m[1], flags=re.M)[1:] if m else []:
+        q, _, a = item.strip().partition("\n")
+        # shortcut: field names are gwenchana.digital's ACF repeater; make them flags when another site needs the FAQ
+        rows.append({"faq_title": q.strip().strip("*").strip(), "faq_content": " ".join(a.split())})
+    return rows
+
+
 def to_html(markdown):
     pandoc = shutil.which("pandoc")
     if not pandoc:
@@ -70,6 +83,7 @@ def payload(md, lang=None):
         data["lang"] = lang
     seo = {"_yoast_wpseo_title": meta.get("title"), "_yoast_wpseo_metadesc": meta.get("meta-description")}
     data["meta"] = {k: v for k, v in seo.items() if v}
+    data["acf"] = {"faq": faq_rows(rest)}
     return data
 
 
@@ -130,17 +144,21 @@ def main():
     ids = category_ids(site, auth, a.category, a.lang) if a.category else []
     if ids:
         data["categories"] = ids
-    seo = data.pop("meta")
+    seo, faq = data.pop("meta"), data.pop("acf")["faq"]
     post = api(site, "posts", auth, data)
     assert post["status"] == "draft", post["status"]
     print(f"draft {post['id']}")
     if a.lang and post.get("lang") != a.lang:
         print(f"warning: language is '{post.get('lang')}', not '{a.lang}'; set it in the editor")
-    # Second request: a refused meta write must not fail the run after the draft already exists.
+    # Separate requests after the draft exists: a refused write must not fail the run or block the other one.
     if seo:
         saved = api(site, f"posts/{post['id']}", auth, {"meta": seo}, warn=True) or {}
         if any(saved.get("meta", {}).get(k) != v for k, v in seo.items()):
             print("note: Yoast SEO title / meta description not saved; paste them in the editor")
+    if faq:
+        saved = api(site, f"posts/{post['id']}", auth, {"acf": {"faq": faq}}, warn=True) or {}
+        if len((saved.get("acf") or {}).get("faq") or []) != len(faq):
+            print("note: FAQ metabox not saved; paste the Q/A in the editor")
     print(f"edit: {site}/wp-admin/post.php?post={post['id']}&action=edit")
     print(f"preview: {site}/?p={post['id']}&preview=true")
 

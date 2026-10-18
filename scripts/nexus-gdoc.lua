@@ -70,11 +70,12 @@ function Pandoc(doc)
   for _, field in ipairs({
     { "Main Keyword", "main-keyword", ", " },
     { "Related Keywords", "related-keywords", ", " },
-    { "Notes", "notes", "<br>" },
+    -- One bullet per note: Docs keeps <br> as cell paragraphs, but read_file_content runs them together.
+    { "Notes", "notes", "</li><li>", "<ul><li>", "</li></ul>" },
   }) do
     local value = optional(doc.meta, field[2], field[3])
     if value then
-      table.insert(rows, row(field[1], value))
+      table.insert(rows, row(field[1], (field[4] or "") .. value .. (field[5] or "")))
     end
   end
 

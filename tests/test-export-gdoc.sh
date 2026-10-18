@@ -17,6 +17,7 @@ related-keywords:
   - "uji export"
 notes:
   - "Ganti <placeholder> & cek sumber"
+  - "Cek tanggal publish"
 ---
 
 # Panduan Contoh
@@ -44,8 +45,7 @@ pandoc "$work_dir/article.md" --from=markdown+yaml_metadata_block+raw_html --to=
   --lua-filter="$repo_root/scripts/nexus-gdoc.lua" --output="$work_dir/article.html"
 
 html="$(cat "$work_dir/article.html")"
-for expected in "Judul" "Panduan Contoh" "/panduan-contoh" "Meta description untuk"   "Main Keyword" "panduan contoh" "Related Keywords" "contoh artikel, uji export"   "Ganti &lt;placeholder&gt; &amp; cek sumber" '<h1 id="panduan-contoh">' \
-  'href="https://example.com"' '<li><p><strong>Apa itu contoh?</strong></p>' '<p>Jawaban contoh di paragraf sendiri.</p></li>' '&lt;div class=&quot;cta&quot;&gt;' "Schema Markup (JSON-LD)"; do
+for expected in "Judul" "Panduan Contoh" "/panduan-contoh" "Meta description untuk"   "Main Keyword" "panduan contoh" "Related Keywords" "contoh artikel, uji export"   "<li>Ganti &lt;placeholder&gt; &amp; cek sumber</li>" "<li>Cek tanggal publish</li>" '<h1 id="panduan-contoh">'   'href="https://example.com"' '<li><p><strong>Apa itu contoh?</strong></p>' '<p>Jawaban contoh di paragraf sendiri.</p></li>' '&lt;div class=&quot;cta&quot;&gt;' "Schema Markup (JSON-LD)"; do
   grep -Fq "$expected" <<<"$html" || { echo "missing: $expected" >&2; exit 1; }
 done
 

@@ -43,6 +43,7 @@ def article_body(rest):
     body = rest[m.end():]
     end = re.search(r"^# (FAQ metabox|Schema Markup)", body, flags=re.M)
     body = body[:end.start()] if end else body
+    body = re.sub(r"^\[Paste this block[^\n]*\]\n?", "", body, flags=re.M)  # /convert's note for manual pasting
     return re.sub(r"^```html\n(.*?)^```", r"```{=html}\n<!-- wp:html -->\n\1<!-- /wp:html -->\n```",
                   body, flags=re.M | re.S).strip()
 

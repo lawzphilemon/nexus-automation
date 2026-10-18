@@ -23,6 +23,8 @@ Intro paragraph.
 <div style="color:#1E1E1E">CTA</div>
 ```
 
+[Paste this block in WordPress Classic Editor → Text tab. Do not switch to Visual tab after pasting.]
+
 ## Closing
 
 # FAQ metabox (paste per field)
@@ -45,6 +47,7 @@ body = wp_draft.article_body(rest)
 assert body.startswith('Intro paragraph.')
 assert '```{=html}\n<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>\n<!-- /wp:html -->\n```' in body
 assert 'FAQ metabox' not in body and 'Schema' not in body and '# CTR' not in body
+assert 'Paste this block' not in body
 
 if shutil.which('pandoc'):
     data = wp_draft.payload(md, 'id')

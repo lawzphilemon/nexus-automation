@@ -2,7 +2,7 @@
 name: export-gdoc
 description: Export the canonical NEXUS article artifact to a Google Doc with the SEO metadata table, real headings, links, tables, CTA code, and JSON-LD schema
 argument-hint: [source.md]
-allowed-tools: Read, Bash
+allowed-tools: Read, Write, Bash
 ---
 
 # NEX-GD - Google Docs Export
@@ -28,16 +28,26 @@ pandoc "<source.md>" --from=markdown+yaml_metadata_block+raw_html --to=html --wr
 
 3. Upload with the Google Drive connector's create-file tool:
    - Title: the article's H1.
-   - Content: the full `.gdoc.html` file as text, content type `text/html`. Leave conversion to Google Docs on.
+   - Content: the full `.gdoc.html` file as text, exactly as Pandoc wrote it (the connector cannot read local files, so copy the HTML character for character; never turn it into Markdown or shorten it), content type `text/html`. Leave conversion to Google Docs on.
    - Folder: only if the user names one. Find it with the connector's search first.
 
-   No Google Drive connector: say so, keep the `.gdoc.html` file, and tell the user to upload it to Google Drive and open it with Google Docs. Skip step 4.
+   No Google Drive connector: say so, keep the `.gdoc.html` file, and tell the user to upload it to Google Drive and open it with Google Docs. Skip steps 4 and 5.
 
-4. Delete `<project>/<slug>.gdoc.html`. Keep the source artifact.
+4. **Read-back check.** Read the new Doc with the Drive `read_file_content` tool (its file ID from step 3), save the returned `fileContent` unchanged as `<project>/<slug>.readback.md`, and compare it with the uploaded HTML:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/gdoc-check.py" "<project>/<slug>.gdoc.html" "<project>/<slug>.readback.md"
+```
+
+   It compares the H2 and H3 headings, links, code blocks (CTA HTML and JSON-LD), and word count (2% tolerance), prints both columns, and exits 1 with the differences on a mismatch.
+   - `OK`: go on.
+   - `MISMATCH`: upload once more from the same `.gdoc.html` (step 3), move the first Doc to the Drive trash with the connector's trash tool (it stays restorable there), and run the check on the new Doc. A second mismatch keeps the second Doc and becomes a note: return the link with `Read-back check: [the differences the script printed]`, so the reviewer knows what to look at. Never let a difference pass silently.
+
+5. Delete `<project>/<slug>.gdoc.html` and `<project>/<slug>.readback.md`. Keep the source artifact.
 
 Return only the Google Doc link. Do not paste the article again.
 
-End with: "Google Doc ready - metadata table, formatted article, and schema included."
+End with: "Google Doc ready - metadata table, formatted article, and schema included. Read-back check: OK." (or the note from step 4).
 
 ## Rules
 

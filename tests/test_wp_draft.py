@@ -52,7 +52,7 @@ assert 'related-keywords' not in meta
 body = wp_draft.article_body(rest)
 assert body.startswith('Intro paragraph.')
 assert '```{=html}\n<!-- wp:html -->\n<div style="color:#1E1E1E">CTA</div>\n<!-- /wp:html -->\n```' in body
-assert 'FAQ metabox' not in body and 'Schema' not in body and '# CTR' not in body
+assert 'FAQ metabox' not in body and 'Answer one' not in body and 'Schema' not in body and '# CTR' not in body
 assert 'Paste this block' not in body
 
 assert wp_draft.faq_rows(rest) == [{'faq_title': 'Q one?', 'faq_content': 'Answer one, second line.'},

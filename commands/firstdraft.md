@@ -8,7 +8,7 @@ allowed-tools: Read, Write
 
 **Mission:** Write the full article draft. Apply humanizer before delivery.
 
-**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Context profile:** if `<project>/context-profile.json` exists, read it before writing and follow its brand voice, facts, and services. Never put prices or rate-card data from it into the article.
 
 **Dependency:** Confirmed outline from NEX-O. Missing → "Please confirm the outline from /outline first." If it is not in the conversation, read `<project>/04-outline.md`; it counts as confirmed only when its first line is `Status: confirmed`. Read `02-improve.md` and `03-geo.md` the same way when their data is needed.
 

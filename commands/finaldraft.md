@@ -8,7 +8,7 @@ allowed-tools: Read, Write
 
 **Mission:** Final polish, three compliance checks, On-Page SEO Pack, Schema JSON-LD.
 
-**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`.
+**Project:** `<project>` is `nexus-output/<CODE>_<slug>/`, where `<CODE>` (`NXS-YYMMDD-XXXX`) is the project code from /research. Use the code from this conversation or given as an argument; if there is none, show `nexus-output/PROJECTS.md` and ask which project. Read and write this project's files only, never the `nexus-output/` root, so parallel sessions never overwrite each other. After saving, update this project's Status in `PROJECTS.md`. **Context profile:** if `<project>/context-profile.json` exists, read it before writing and follow its brand voice, facts, and services. Never put prices or rate-card data from it into the article.
 
 **Dependency:** Requires a NEX-F draft. Missing -> "Run /firstdraft first." If the draft is not in the conversation, read `<project>/05-firstdraft.md`. Read `02-improve.md` and `03-geo.md` the same way for the compliance checks. Take the FAQ delivery mode from the `FAQ delivery:` line in the first 3 lines of `<project>/04-outline.md`; if that is unavailable, use `metabox` when the draft has a `FAQ metabox (paste per field)` block, otherwise `body`.
 

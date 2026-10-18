@@ -21,6 +21,8 @@ allowed-tools: WebSearch, WebFetch, Read, Write, mcp__claude-in-chrome, mcp__Cla
 
    Every later stage updates the Status column. Show the code prominently: "Your project code is <CODE>. Use /resume <CODE> to come back to it."
 
+   **Context profile.** When `context-profiles/` exists in the working directory, use the profile the user names (a loose name such as "lawrence" matches `gwenchana-lawrence.json`; ignore `_versi-lama/`). If they named none, list the `.json` files there and ask which one, or "none". Copy the chosen file to `<project>/context-profile.json`. Later stages read that copy, so editing a profile never changes an article that has already started. To switch an existing project, copy the new profile over that file and re-run the stages after it.
+
 2. **Choose the mode**, in this order:
    1. **Live browser mode** (default): use Claude in Chrome if connected. Otherwise use the built-in browser if available. State which browser is used.
    2. **Web search mode** (fallback): only when no browser is available, or the browser is blocked (step 3). Search `[keyword]` and `[keyword] [market/language]`, then tell the user the results are search-API results, not the live Google page.

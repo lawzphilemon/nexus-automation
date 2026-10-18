@@ -38,6 +38,7 @@ Read the header row and find columns **by header name**, not by position. Englis
 | Penawaran & klaim yang boleh / Offer and allowed claims | Offer details and approved claims. Anything not written here is not claimed |
 | Convert / Convert | `ya` (default when empty) or `tidak` (no CTA blocks) |
 | Profil / Profile | Empty = `/convert`. `truemission` = `/convert-truemission` (its profile supplies the destination and palette) |
+| Context profile / Context profile | File name (or loose name) in `context-profiles/`, for example `gwenchana-lawrence`. Empty = no profile, noted in the notes. A name that matches no file is an `error` |
 | Status | Drives the run |
 | Kode NXS, Slug, Link Doc outline, Link Doc artikel, Terakhir diproses, Catatan Claude | Written by Claude (English: NXS code, Slug, Outline Doc, Article Doc, Last run, Notes) |
 
@@ -60,7 +61,7 @@ Collect each subagent's one-line report for section 6. A subagent that stops wit
 In queue mode the questions the stages normally ask are answered from the sheet row, then from each stage's own recommended default. Record every default you used in the notes. A stage that would need an answer the row cannot give sets the row to `error` and names the column.
 
 **`ready` → `outline-review`** (gate 1)
-1. Project: reuse the Kode NXS if the row has one (continue from the first stage whose file is missing), else create the code and folder as in /research and write them to the row.
+1. Project: reuse the Kode NXS if the row has one (continue from the first stage whose file is missing), else create the code and folder as in /research and write them to the row. Copy the row's Context profile to `<project>/context-profile.json` as /research does, without asking.
 2. /research (done in the browser pass above, or here for a single row), /improve, /geo. A keyword that is too broad is an `error` asking for a narrower one. A CAPTCHA or blocked browser falls back to web search mode and the notes say the SERP came from search results, not the live page.
 3. /outline from the row: language and market from Market, word count, Voice, FAQ delivery, and the CTA count by the outline's own rule. Internal links: the row's links, else discovery from the sitemap or `site:` search, keeping at most 5 verified same-domain pages with anchors taken from the target page's own title or topic. Never an unverified URL.
 4. Export the outline for review: write `<project>/04b-outline-review.md` with a **review brief** on top (keyword and market; the search intent and content gap; the information gain angle; the internal links; the CTA count and reason; Voice, FAQ delivery, and word count; every default the queue chose; how to review), a horizontal rule, then the outline. Convert it with `pandoc "<file>" --from=markdown --to=html --wrap=none --output="<project>/outline-review.html"` (no Pandoc → stop with `https://pandoc.org/installing.html`), upload it through the Drive create-file tool as `text/html` titled `[CODE] outline - [H1]`, then delete the `.html`.

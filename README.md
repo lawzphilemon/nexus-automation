@@ -19,6 +19,8 @@ General-purpose Claude Code plugin for SEO/GEO article research, drafting, conve
 
 `/research` gives every article a unique project code, `NXS-YYMMDD-XXXX` (for example `NXS-261014-7QF3`). Each stage saves its output to that project's own folder, `nexus-output/<CODE>_<slug>/` (`01-research.md` to `05-firstdraft.md`, then `latest.md`), and `nexus-output/PROJECTS.md` lists every project with its status. A new session never overwrites another article's files, and the pipeline can resume after the conversation is compacted or restarted.
 
+**Context profiles.** Put brand context profiles (JSON) in `context-profiles/` in the working directory (git-ignored). `/research` asks which one to use, or takes a loose name such as "lawrence", and copies it to `<project>/context-profile.json`; every writing stage reads that copy. `/queue` takes it from the sheet's Context profile column. Prices and rate-card data in a profile never go into an article.
+
 ### `/resume` — NEX-0
 
 Reopens an article by its code, slug, or keyword (or lists all projects), shows which stages are done, and names the next command. Later stages in that conversation keep using the same code.

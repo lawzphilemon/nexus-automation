@@ -143,11 +143,11 @@ Humanizes Indonesian, English, or mixed text while preserving meaning and E-E-A-
 
 ## Running in Hermes
 
-The same clone also runs in [Hermes Agent](https://github.com/NousResearch/hermes-agent). `.hermes/skills/nexus/SKILL.md` is a router: `/nexus <command> [args]` reads `commands/<command>.md` and follows it, translating Claude tools to Hermes tools, so a `git pull` updates both agents.
+The same repository is also a portable [Agent Plugins](https://agent-plugins.org) package for [Hermes Agent](https://github.com/NousResearch/hermes-agent): the root `plugin.json` is for Hermes, `.claude-plugin/plugin.json` for Claude Code. In Hermes, the `nexus-hermes` skill is a router: it reads `commands/<command>.md` from the installed plugin and follows it, translating Claude tools to Hermes tools. Claude Code ignores that skill.
 
-1. Trust the clone once: `hermes skills trust <path to this repo>`. Hermes then loads the skill in sessions (and cron jobs) whose working directory is inside the repo.
+1. Install and enable: `hermes plugins install lawzphilemon/nexus-automation --enable` (or the Plugin Catalog's GitHub install). Update later with `hermes plugins update nexus-automation`.
 2. Set up Hermes' `google-workspace` skill, and share every client's queue sheet and Drive folders with the Google account it signs in with (edit access).
-3. Run `/nexus queue`, or any stage such as `/nexus research <keyword>`.
+3. Start Hermes in your workspace (the folder with `clients/` and `nexus-output/`) and ask it to run a NEXUS command, for example "/nexus queue" or "nexus research <keyword>".
 
 `scripts/hermes-gdrive.py` adds the two Drive steps Hermes' Google skill lacks: uploading the export HTML as a Google Doc, and reading a Doc's comments. Schedule the queue in Claude or in Hermes, not both.
 

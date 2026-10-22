@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "General-purpose NEXUS SEO/GEO content pipeline plugin for Claude Code",
-    "version": "3.4.0"
+    "version": "3.5.0"
   },
   "plugins": [
     {
       "name": "nexus-automation",
       "source": "./",
       "description": "Multi-client SEO/GEO content pipeline: setup wizard, SERP analysis, intent and E-E-A-T gaps, query fan-out and GEO structure, outline with verified internal links and a cannibalization check, first and final draft with SEO pack and schema, humanizer, conversion layer, Google Docs export with read-back check, a Google Sheet queue with two review gates, and WordPress drafts.",
-      "version": "3.4.0",
+      "version": "3.5.0",
       "author": {
         "name": "Lawrence Philemon"
       },

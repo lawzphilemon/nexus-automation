@@ -141,6 +141,16 @@ Humanizes Indonesian, English, or mixed text while preserving meaning and E-E-A-
 - `wa-cta-standard` — three generic, site-branded CTA layouts.
 - `product-upsell` — evidence-gated product or service mapping for any industry.
 
+## Running in Hermes
+
+The same clone also runs in [Hermes Agent](https://github.com/NousResearch/hermes-agent). `.hermes/skills/nexus/SKILL.md` is a router: `/nexus <command> [args]` reads `commands/<command>.md` and follows it, translating Claude tools to Hermes tools, so a `git pull` updates both agents.
+
+1. Trust the clone once: `hermes skills trust <path to this repo>`. Hermes then loads the skill in sessions (and cron jobs) whose working directory is inside the repo.
+2. Set up Hermes' `google-workspace` skill, and share every client's queue sheet and Drive folders with the Google account it signs in with (edit access).
+3. Run `/nexus queue`, or any stage such as `/nexus research <keyword>`.
+
+`scripts/hermes-gdrive.py` adds the two Drive steps Hermes' Google skill lacks: uploading the export HTML as a Google Doc, and reading a Doc's comments. Schedule the queue in Claude or in Hermes, not both.
+
 ## Upgrading from 2.x
 
 - `/convert-truemission` is gone. Put a client's fixed CTA, offer, and compliance rules in `clients/<client>/conversion.md`; `/convert` reads it for that client only.

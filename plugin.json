@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "nexus-automation",
+  "version": "3.6.0",
+  "description": "NEXUS Automation for Hermes Agent: the multi-client SEO/GEO article pipeline and Google Sheet queue. Start with the nexus-hermes skill. Claude Code reads .claude-plugin/plugin.json instead.",
+  "author": { "name": "Lawrence Philemon" },
+  "repository": "https://github.com/lawzphilemon/nexus-automation",
+  "keywords": ["seo", "geo", "content", "google-sheets", "wordpress"]
+}

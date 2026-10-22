@@ -13,8 +13,12 @@ assert g.format_comments([
     {'content': 'gone', 'deleted': True},
 ]) == [{'comment': 'ganti H2', 'on': 'Apa itu CTR', 'resolved': False, 'replies': ['ok']}]
 
-# Every command the Hermes router can reach exists, and the router stays client-neutral.
-skill = (root / '.hermes' / 'skills' / 'nexus' / 'SKILL.md').read_text(encoding='utf-8')
-assert skill.startswith('---\nname: nexus\n')
-assert 'hermes-gdrive.py' in skill and (root / 'commands' / 'queue.md').exists()
+# The Hermes router and the root Agent Plugins manifest stay in step with the Claude plugin.
+import json
+skill = (root / 'skills' / 'nexus-hermes' / 'SKILL.md').read_text(encoding='utf-8')
+assert skill.startswith('---\nname: nexus-hermes\n') and 'hermes-gdrive.py' in skill
+hermes = json.loads((root / 'plugin.json').read_text(encoding='utf-8'))
+claude = json.loads((root / '.claude-plugin' / 'plugin.json').read_text(encoding='utf-8'))
+assert hermes['$schema'] == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json'
+assert hermes['name'] == claude['name'] and hermes['version'] == claude['version'], (hermes['version'], claude['version'])
 print('hermes gdrive test passed')

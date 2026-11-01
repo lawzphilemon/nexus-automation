@@ -141,6 +141,16 @@ Humanizes Indonesian, English, or mixed text while preserving meaning and E-E-A-
 - `wa-cta-standard` — three generic, site-branded CTA layouts.
 - `product-upsell` — evidence-gated product or service mapping for any industry.
 
+## Running as an agent
+
+`agents/nexus.md` runs the whole session as the NEXUS orchestrator on Sonnet, with Opus as advisor:
+
+```bash
+claude --agent nexus-automation:nexus --advisor opus
+```
+
+Then ask it to run the queue (for example "run the queue for acme"). It follows `/queue` as written, gives each row a Sonnet subagent, and hands read-only lookups (internal-link candidates, `facts.md`, existing `nexus-output/` folders) to `nexus-scout` on Haiku. It consults the advisor before an outline locks, after the same error twice on a row, and before a row moves on. The advisor needs the Anthropic API and Claude Code with `/advisor` support; without it the agent runs those checks itself. `/advisor opus` in a session, or `"advisorModel": "opus"` in settings, saves the advisor as your default.
+
 ## Running in Hermes
 
 The same repository is also a portable [Agent Plugins](https://agent-plugins.org) package for [Hermes Agent](https://github.com/NousResearch/hermes-agent): the root `plugin.json` is for Hermes, `.claude-plugin/plugin.json` for Claude Code. In Hermes, the `nexus-hermes` skill is a router: it reads `commands/<command>.md` from the installed plugin and follows it, translating Claude tools to Hermes tools. Claude Code ignores that skill.

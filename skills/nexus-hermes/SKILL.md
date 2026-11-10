@@ -4,7 +4,7 @@ description: >
   Hermes Agent only (Claude Code: ignore this skill and use the /nexus-automation commands). Runs the
   NEXUS Automation article pipeline in Hermes: setup, research, improve, geo, outline, firstdraft,
   finaldraft, humanize, convert, export-gdoc, constructive-self-criticize, resume, and the Google Sheet
-  queue with two review gates and WordPress drafts. Use when the user asks to run NEXUS, the NEXUS
+  queue with one review gate (the finished article) and WordPress drafts after approval. Use when the user asks to run NEXUS, the NEXUS
   queue, or any NEXUS stage (for example "/nexus queue" or "nexus research <keyword>").
 ---
 

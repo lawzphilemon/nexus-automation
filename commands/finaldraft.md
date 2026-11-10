@@ -38,6 +38,10 @@ allowed-tools: Read, Write
 - [ ] `brand`: the brand speaks as "we"/"kami" throughout, including the FAQ, and no sentence describes the brand from outside ("[Brand]'s service page lists…", "[Brand] runs…")?
 - [ ] `third-party`: the brand is named in the third person, with the disclosure if there is one?
 
+**Format compliance**
+- [ ] No list item starts with a bold label (`1. **Label.** text`, `- **Label** text`) and no bold caption line such as `**Perlu jika:**`? Remove the bold, keep the list. Exceptions: the bold term in a Definition Box, and the bold questions of the FAQ metabox.
+- [ ] Bold appears only on a technical term at its first use?
+
 **Humanizer compliance:** run the humanizer skill's self-check in full. Fix failures before delivery.
 
 **Antislop prose gate:** run the `antislop-copy` skill on the draft after the humanizer. It checks, it does not rewrite: fix only its FAIL lines, once, and record the report in `06-critique.md`.

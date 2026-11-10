@@ -12,7 +12,7 @@ allowed-tools: Read, Write
 
 **Dependency:** Requires a NEX-F draft. Missing -> "Run /firstdraft first." If the draft is not in the conversation, read `<project>/05-firstdraft.md`. Read `02-improve.md` and `03-geo.md` the same way for the compliance checks. Take the FAQ delivery mode from the `FAQ delivery:` line in the first 3 lines of `<project>/04-outline.md`; if that is unavailable, use `metabox` when the draft has a `FAQ metabox (paste per field)` block, otherwise `body`.
 
-1. Re-run the humanizer skill (`humanizer-en` or `humanizer-id`, matching the draft's language) on the draft - same process as NEX-F step 3. Do not announce.
+1. Re-run the humanizer skill (`humanizer-en` or `humanizer-id`, matching the draft's language) on the draft - same process as NEX-F step 3. Do not announce. For a Bahasa Indonesia draft, `skills/humanizer-id/scripts/metrik.py` may be run as an optional style signal (see that skill); never edit text just to move a number.
 
 2. Run three compliance checklists. Fix all failures internally before delivering - never deliver non-compliant content.
 
@@ -39,6 +39,8 @@ allowed-tools: Read, Write
 - [ ] `third-party`: the brand is named in the third person, with the disclosure if there is one?
 
 **Humanizer compliance:** run the humanizer skill's self-check in full. Fix failures before delivery.
+
+**Antislop prose gate:** run the `antislop-copy` skill on the draft after the humanizer. It checks, it does not rewrite: fix only its FAIL lines, once, and record the report in `06-critique.md`.
 
 3. Finalize the article in clean markdown. Bold technical terms on first use only.
 

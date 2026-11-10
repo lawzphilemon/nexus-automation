@@ -137,7 +137,8 @@ Humanizes Indonesian, English, or mixed text while preserving meaning and E-E-A-
 
 ## Supporting skills
 
-- `humanizer-id` and `humanizer-en` — language-specific humanization.
+- `humanizer-id` and `humanizer-en` — language-specific humanization: a NEXUS layer (SQEG protections, register, brand-voice precedence, self-check) over the pattern catalogs of adhiprib/humanizer-indonesia and blader/humanizer (MIT, vendored; see each `UPSTREAM.md`).
+- `antislop-copy` — non-interactive prose gate from miqdadbadjuber/anti-slop (MIT, vendored): PASS/FAIL on fabricated stats, testimonials, weasel attributions, and AI tells, run by `/finaldraft` after the humanizer.
 - `wa-cta-standard` — three generic, site-branded CTA layouts.
 - `product-upsell` — evidence-gated product or service mapping for any industry.
 

@@ -23,7 +23,7 @@ This skill is a router. The pipeline lives in this plugin's command files, writt
 
 - "/nexus <command> [args]", "nexus <command> …", or a NEXUS stage named in words → read `<plugin root>/commands/<command>.md` in full, then follow it with `[args]` as its arguments. No command given → list the files in `<plugin root>/commands/` and ask which one.
 - Inside a command file, `/nexus-automation:<x>`, `/<x>` (a stage such as `/research`, `/outline`) and "NEX-<letter>" stage names all mean `<plugin root>/commands/<x>.md`.
-- "Use the `<name>` skill" (`humanizer-id`, `humanizer-en`, `product-upsell`, `wa-cta-standard`) → read `<plugin root>/skills/<name>/SKILL.md` and follow it, with its `references/` files when it points to them.
+- "Use the `<name>` skill" (`humanizer-id`, `humanizer-en`, `antislop-copy`, `product-upsell`, `wa-cta-standard`) → read `<plugin root>/skills/<name>/SKILL.md` and follow it, with its `references/` files when it points to them.
 - `${CLAUDE_PLUGIN_ROOT}` = plugin root. Ignore the `allowed-tools` frontmatter line.
 
 ## 3. Tool translation

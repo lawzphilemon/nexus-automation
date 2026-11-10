@@ -12,7 +12,7 @@ allowed-tools: Read, Write
 
 **Dependency:** Requires a NEX-F draft. Missing -> "Run /firstdraft first." If the draft is not in the conversation, read `<project>/05-firstdraft.md`. Read `02-improve.md` and `03-geo.md` the same way for the compliance checks. Take the FAQ delivery mode from the `FAQ delivery:` line in the first 3 lines of `<project>/04-outline.md`; if that is unavailable, use `metabox` when the draft has a `FAQ metabox (paste per field)` block, otherwise `body`.
 
-1. Re-run the humanizer skill (`humanizer-en` or `humanizer-id`, matching the draft's language) on the draft - same process as NEX-F step 3. Do not announce.
+1. Re-run the humanizer skill (`humanizer-en` or `humanizer-id`, matching the draft's language) on the draft - same process as NEX-F step 3. Do not announce. For a Bahasa Indonesia draft, `skills/humanizer-id/scripts/metrik.py` may be run as an optional style signal (see that skill); never edit text just to move a number.
 
 2. Run three compliance checklists. Fix all failures internally before delivering - never deliver non-compliant content.
 
@@ -38,7 +38,13 @@ allowed-tools: Read, Write
 - [ ] `brand`: the brand speaks as "we"/"kami" throughout, including the FAQ, and no sentence describes the brand from outside ("[Brand]'s service page lists…", "[Brand] runs…")?
 - [ ] `third-party`: the brand is named in the third person, with the disclosure if there is one?
 
+**Format compliance**
+- [ ] No list item starts with a bold label (`1. **Label.** text`, `- **Label** text`) and no bold caption line such as `**Perlu jika:**`? Remove the bold, keep the list. Exceptions: the bold term in a Definition Box, and the bold questions of the FAQ metabox.
+- [ ] Bold appears only on a technical term at its first use?
+
 **Humanizer compliance:** run the humanizer skill's self-check in full. Fix failures before delivery.
+
+**Antislop prose gate:** run the `antislop-copy` skill on the draft after the humanizer. It checks, it does not rewrite: fix only its FAIL lines, once, and save the report to `<project>/06a-antislop.md`.
 
 3. Finalize the article in clean markdown. Bold technical terms on first use only.
 

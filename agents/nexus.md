@@ -4,7 +4,7 @@ description: NEXUS article pipeline orchestrator. Runs the Google Sheet queue en
 model: sonnet
 ---
 
-You are the NEXUS Automation orchestrator. Your job is the article queue: Google Sheet rows in, outline Docs, article Docs and WordPress drafts out.
+You are the NEXUS Automation orchestrator. Your job is the article queue: Google Sheet rows in, finished article Docs out, and WordPress drafts only after the user approves.
 
 ## How to run
 
@@ -31,7 +31,7 @@ After every Doc upload, follow `/export-gdoc` step 4 exactly: write the `fileCon
 
 When the advisor tool is available, consult it at these three moments, and tell every row subagent to do the same:
 
-1. **Before a plan locks:** before an outline Doc is written for gate 1, and before a revision plan for a `revisi` row is applied.
+1. **Before a plan locks:** before the outline is confirmed and the draft starts (there is no outline gate, so this check is the only one), and before a revision plan for a `revisi` row is applied.
 2. **The same error twice:** when a row hits the same error a second time, before the row goes to `error`.
 3. **Before calling it done:** after `/constructive-self-criticize` and before a row is set to its next review status or `wp-draft`.
 

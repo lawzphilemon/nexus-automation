@@ -23,12 +23,12 @@ Client	Tidak	Nama folder klien di clients/. Kosong = brand pemilik sheet ini. Ko
 		
 Status	Siapa yang mengisi	Artinya
 (kosong) atau draft	Anda	Belum siap, dilewati.
-ready	Anda	Siap diproses: cek kanibalisasi, research, sampai outline.
+ready	Anda	Siap diproses. Berjalan otomatis: cek kanibalisasi, research, outline, draf, final draft, CTA, sampai Doc artikel. Tidak berhenti di outline.
 running	Claude	Sedang diproses. Jangan diubah.
-outline-review	Claude	Doc outline siap. Beri komentar di Doc.
+outline-review	Claude	(Lama, tidak dipakai lagi untuk baris baru.) Doc outline siap. Beri komentar di Doc.
 outline-revisi	Anda	Komentar di Doc outline sudah ditulis, minta revisi.
 outline-approved	Anda	Outline disetujui, lanjut ke draf penuh.
-review	Claude	Doc artikel siap. Beri komentar di Doc.
+review	Claude	Doc artikel siap. Proses berhenti di sini, belum ada draft WordPress. Beri komentar di Doc.
 revisi	Anda	Komentar di Doc artikel sudah ditulis, minta revisi.
 approved	Anda	Artikel disetujui. Claude mengirimnya ke WordPress klien sebagai draft (tidak pernah publish).
 wp-draft	Claude	Draft sudah ada di WordPress, link edit di Catatan Claude. Publish manual, lalu set done.

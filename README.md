@@ -2,6 +2,20 @@
 
 General-purpose Claude Code plugin for SEO/GEO article research, drafting, conversion, and Google Docs export. It has no default brand, client, domain, WordPress site, contact, product, or brand palette: every run works for the client you name.
 
+> **Personal use.** NEXUS Automation is built for its author's own content work. The code is public and MIT licensed, but it is not a supported product: there are no releases on a schedule, no support, and the pipeline changes whenever the author's workflow does.
+
+## Credits
+
+The humanizer and anti-slop rules build on three open-source projects. Their files are vendored unchanged with their MIT licenses, and each skill folder's `UPSTREAM.md` names the exact commit:
+
+| Project | Author | License | Used in | What is used |
+|---|---|---|---|---|
+| [humanizer-indonesia](https://github.com/adhiprib/humanizer-indonesia) | [adhiprib](https://github.com/adhiprib) | MIT | `skills/humanizer-id/` | The Indonesian AI-tell catalog (`references/id-ai-tells.md`), the upstream skill as a reference, and the style-metrics script `scripts/metrik.py` |
+| [humanizer](https://github.com/blader/humanizer) | [blader](https://github.com/blader) | MIT | `skills/humanizer-en/` | The English pattern catalog, as `references/upstream-skill.md` |
+| [anti-slop](https://github.com/miqdadbadjuber/anti-slop) | [miqdadbadjuber](https://github.com/miqdadbadjuber) | MIT | `skills/antislop-copy/` | The copywriting skill and the prose rules of the core (R-02, R-15 to R-18, R-36, R-38, C-5) |
+
+The NEXUS layer on top (Layer 0 SQEG protections, register, precedence, self-checks, and the non-interactive prose gate) is this repository's own. Thanks to the authors for publishing their work.
+
 ## Install
 
 ```text
@@ -111,7 +125,7 @@ Requires `WebFetch` and `WebSearch`.
 
 ### `/queue` — NEX-Q
 
-Runs the whole pipeline from a Google Sheet, one row per article, with two review gates. The only question in chat is the CTA contact, asked once per brand at the start of a run (a scheduled run with nobody to answer sends those rows to `error`). `ready` rows first get a cannibalization check: by search intent, not exact keyword, against the client's `links.md`, the sitemap, a `site:` search, the sheet's articles in progress, and the other `ready` rows of the run. Rows that share an intent are flagged together, and a row whose question an existing page already answers goes to `error` with that URL in the notes and three options (update that article, give the row a clearly different angle and set it to `ready` again, or skip it); a partial overlap continues with a named angle and opens the review brief. Then they get research, intent, GEO, and an outline, exported to a Google Doc (`outline-review`). After you comment and set `outline-approved`, the queue writes the draft, final draft, self-critique, CTA blocks, and the article Doc (`review`). Comment and set `revisi` for another pass, set `approved` to send the article to WordPress as a draft (`wp-draft`), or set `done`.
+Runs the whole pipeline from a Google Sheet, one row per article, with one review gate (the finished article). The only question in chat is the CTA contact, asked once per brand at the start of a run (a scheduled run with nobody to answer sends those rows to `error`). `ready` rows first get a cannibalization check: by search intent, not exact keyword, against the client's `links.md`, the sitemap, a `site:` search, the sheet's articles in progress, and the other `ready` rows of the run. Rows that share an intent are flagged together, and a row whose question an existing page already answers goes to `error` with that URL in the notes and three options (update that article, give the row a clearly different angle and set it to `ready` again, or skip it); a partial overlap continues with a named angle, recorded in the notes. Then they run without stopping through research, intent, GEO, the outline (saved as a local `04b-outline-review.md` brief, no Doc), the draft, final draft with the humanizer and antislop gate, self-critique, CTA blocks, and the article Doc (`review`). The run stops there, before WordPress. The old outline statuses (`outline-review`, `outline-revisi`, `outline-approved`) still work for rows already waiting at them. Comment and set `revisi` for another pass, set `approved` to send the article to WordPress as a draft (`wp-draft`), or set `done`.
 
 Up to 3 rows run in parallel, one subagent each; `/research` runs one row at a time because it drives the browser. Each brand's queue sheet is the `Queue sheet` line in its `facts.md`; `nexus-output/queue.json` is optional (`drive_folder`, and the older single shared sheet with `spreadsheet_id` and `tab`, where every row must name its Client). Columns are found by header name: Keyword, Market, Domain are required; Voice, FAQ, Word count, First-hand material, Internal links, CTA destination, Button label, Offer and allowed claims, Convert, Context profile, Client are optional or conditional. The sheet can also start with the keyword-research columns No, Month - Year, Keywords, Volume, Judul Artikel, Lang, and Notes, so research rows can be pasted in as they are: Judul Artikel becomes the working H1, Lang can stand in for Market (`id` = Indonesia), and Notes are the research brief (SERP observations, gap, angle, link and CTA hints, restrictions) that every stage checks against live data. Claude writes the NXS code, slug, both Doc links, last run, and notes. It never publishes, shares, or sends anything. Only Doc comments are read back, not edits typed into the Doc.
 
@@ -129,7 +143,7 @@ Exports the latest final or converted article to a Google Doc through the Google
 
 It uses Pandoc with the bundled Lua filter; install Pandoc from [pandoc.org/installing.html](https://pandoc.org/installing.html).
 
-**Read-back check.** The Drive connector cannot read local files, so the HTML is copied into the upload by hand. After the upload, the Doc is read back with the connector's `read_file_content`, and `scripts/gdoc-check.py` (Python stdlib) compares it with the generated HTML: H2 and H3 headings, links, code blocks, and word count within 2%. A mismatch uploads once more (the first Doc goes to the Drive trash); a second mismatch keeps the Doc and reports the differences as a note instead of letting them pass silently. `/queue` runs the same check on the outline Doc. The Doc stays private until you share it. Without a Google Drive connector, the command keeps the generated HTML file so you can upload it to Drive and open it with Google Docs.
+**Read-back check.** The Drive connector cannot read local files, so the HTML is copied into the upload by hand. After the upload, the Doc is read back with the connector's `read_file_content`, and `scripts/gdoc-check.py` (Python stdlib) compares it with the generated HTML: H2 and H3 headings, links, code blocks, and word count within 2%. A mismatch uploads once more (the first Doc goes to the Drive trash); a second mismatch keeps the Doc and reports the differences as a note instead of letting them pass silently. `/queue` runs the same check on the article Doc. The Doc stays private until you share it. Without a Google Drive connector, the command keeps the generated HTML file so you can upload it to Drive and open it with Google Docs.
 
 ### `/humanize` — NEX-H
 
@@ -137,7 +151,8 @@ Humanizes Indonesian, English, or mixed text while preserving meaning and E-E-A-
 
 ## Supporting skills
 
-- `humanizer-id` and `humanizer-en` — language-specific humanization.
+- `humanizer-id` and `humanizer-en` — language-specific humanization: a NEXUS layer (SQEG protections, register, brand-voice precedence, self-check) over the pattern catalogs of adhiprib/humanizer-indonesia and blader/humanizer (MIT, vendored; see each `UPSTREAM.md`).
+- `antislop-copy` — non-interactive prose gate from miqdadbadjuber/anti-slop (MIT, vendored): PASS/FAIL on fabricated stats, testimonials, weasel attributions, and AI tells, run by `/finaldraft` after the humanizer.
 - `wa-cta-standard` — three generic, site-branded CTA layouts.
 - `product-upsell` — evidence-gated product or service mapping for any industry.
 

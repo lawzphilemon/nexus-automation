@@ -2,6 +2,20 @@
 
 General-purpose Claude Code plugin for SEO/GEO article research, drafting, conversion, and Google Docs export. It has no default brand, client, domain, WordPress site, contact, product, or brand palette: every run works for the client you name.
 
+> **Personal use.** NEXUS Automation is built for its author's own content work. The code is public and MIT licensed, but it is not a supported product: there are no releases on a schedule, no support, and the pipeline changes whenever the author's workflow does.
+
+## Credits
+
+The humanizer and anti-slop rules build on three open-source projects. Their files are vendored unchanged with their MIT licenses, and each skill folder's `UPSTREAM.md` names the exact commit:
+
+| Project | Author | License | Used in | What is used |
+|---|---|---|---|---|
+| [humanizer-indonesia](https://github.com/adhiprib/humanizer-indonesia) | [adhiprib](https://github.com/adhiprib) | MIT | `skills/humanizer-id/` | The Indonesian AI-tell catalog (`references/id-ai-tells.md`), the upstream skill as a reference, and the style-metrics script `scripts/metrik.py` |
+| [humanizer](https://github.com/blader/humanizer) | [blader](https://github.com/blader) | MIT | `skills/humanizer-en/` | The English pattern catalog, as `references/upstream-skill.md` |
+| [anti-slop](https://github.com/miqdadbadjuber/anti-slop) | [miqdadbadjuber](https://github.com/miqdadbadjuber) | MIT | `skills/antislop-copy/` | The copywriting skill and the prose rules of the core (R-02, R-15 to R-18, R-36, R-38, C-5) |
+
+The NEXUS layer on top (Layer 0 SQEG protections, register, precedence, self-checks, and the non-interactive prose gate) is this repository's own. Thanks to the authors for publishing their work.
+
 ## Install
 
 ```text

@@ -22,7 +22,7 @@ Verified facts, the CTA from `/convert`, and Layer 0 SQEG of the humanizer beat 
 
 ## Gate
 
-Read the finished article (`latest.md` or the file the stage names). Answer each line with PASS or FAIL and one line of evidence. Skip a line only if its element is absent and say `n/a`.
+Read the finished article (`latest.md` or the file the stage names). Answer each line with PASS, WARN, or FAIL and one line of evidence. WARN means supported but needing the owner's action, for example a claim backed by `facts.md` that the reader cannot check because the article gives no link. WARN is not fixed by rewriting: it goes to the notes. Skip a line only if its element is absent and say `n/a`.
 
 1. **R-17 numbers:** every statistic, percentage, price, or date has a source named in the article or in `facts.md`? No invented "10K+ users" style figures.
 2. **R-18 testimonials:** no quote, customer name, or case result that is not in a verified source.
@@ -38,4 +38,4 @@ Do not flag anything under "What NOT to flag" in `references/copywriting.md`. Do
 
 ## Output
 
-Write the report to the project's `06-critique.md` under a heading `Antislop prose gate`, one line per check. If any line is FAIL, fix only the failing sentences in the source file (keep YAML, FAQ metabox, CTA blocks, and schema in sync), re-run the gate once, and record the result. If it still fails, list the remaining items in the notes for the reviewer instead of looping. Standalone use (no project folder): return the report in the reply.
+Write the report to `<project>/06a-antislop.md` (overwrite if it exists), one line per check. Never write it into `06-critique.md`: `/constructive-self-criticize` overwrites that file. If any line is FAIL, fix only the failing sentences in the source file (keep YAML, FAQ metabox, CTA blocks, and schema in sync), re-run the gate once, and record the result. If it still fails, list the remaining items in the notes for the reviewer instead of looping. Standalone use (no project folder): return the report in the reply.

@@ -44,7 +44,7 @@ allowed-tools: Read, Write
 
 **Humanizer compliance:** run the humanizer skill's self-check in full. Fix failures before delivery.
 
-**Antislop prose gate:** run the `antislop-copy` skill on the draft after the humanizer. It checks, it does not rewrite: fix only its FAIL lines, once, and record the report in `06-critique.md`.
+**Antislop prose gate:** run the `antislop-copy` skill on the draft after the humanizer. It checks, it does not rewrite: fix only its FAIL lines, once, and save the report to `<project>/06a-antislop.md`.
 
 3. Finalize the article in clean markdown. Bold technical terms on first use only.
 

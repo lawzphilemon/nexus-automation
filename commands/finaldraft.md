@@ -109,6 +109,12 @@ notes:
 
 Write valid YAML and escape values when needed. The article must contain no duplicated SEO pack. The schema heading and fenced JSON block must be last.
 
+Then strip invisible Unicode from the saved file (zero-width characters, BOM, soft hyphen, bidi controls, tag characters, exotic spaces). Run it silently, and mention the count only if it is above 0:
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/scripts/clean-invisible.py" "<project>/latest.md"
+```
+
 7. **Feature image prompt.** Write `<project>/feature-image-prompt.md` (plain UTF-8 markdown) with one prompt for a 16:9 blog feature image (1920×1080) that shows the article's main idea, not a generic stock scene:
    - Follow the context profile's `visual_identity` when present (palette as hex codes, illustration or photography style, its imagery rules). Otherwise use a clean editorial style.
    - Composition: a clear focal subject, with calm space where the theme may overlay the title.
